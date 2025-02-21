@@ -1,139 +1,115 @@
-﻿#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
-#include <iostream>
+﻿#include <SDL.h>
+#include <vector>
+#include <ctime>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int CELL_SIZE = 20;
 
-SDL_Window* window = nullptr;
-SDL_Renderer* renderer = nullptr;
-TTF_Font* font = nullptr;
-Mix_Music* music = nullptr;
-SDL_Texture* imageTexture = nullptr;
+struct Point {
+    int x, y;
+};
 
-// Hàm tải ảnh
-SDL_Texture* LoadTexture(const char* file) {
-    SDL_Surface* surface = IMG_Load(file);
-    if (!surface) {
-        std::cout << "Lỗi tải ảnh: " << IMG_GetError() << std::endl;
-        return nullptr;
-    }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-    return texture;
-}
-
-// Hàm hiển thị chữ
-SDL_Texture* RenderText(const char* text, SDL_Color color) {
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-    if (!surface) {
-        std::cout << "Lỗi render text: " << TTF_GetError() << std::endl;
-        return nullptr;
-    }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-    return texture;
-}
-
-// Khởi tạo SDL2 và các thư viện
-bool InitSDL() {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-        std::cout << "Lỗi khởi tạo SDL: " << SDL_GetError() << std::endl;
-        return false;
-    }
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-        std::cout << "Lỗi SDL_image: " << IMG_GetError() << std::endl;
-        return false;
-    }
-    if (TTF_Init() == -1) {
-        std::cout << "Lỗi SDL_ttf: " << TTF_GetError() << std::endl;
-        return false;
-    }
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        std::cout << "Lỗi SDL_mixer: " << Mix_GetError() << std::endl;
-        return false;
+class SnakeGame {
+public:
+    SnakeGame() {
+        SDL_Init(SDL_INIT_VIDEO);
+        window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        running = true;
+        direction = { 1, 0 };
+        snake.push_back({ 10, 10 });
+        spawnFood();
     }
 
-    window = SDL_CreateWindow("Test SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    if (!window || !renderer) {
-        std::cout << "Lỗi tạo cửa sổ hoặc renderer: " << SDL_GetError() << std::endl;
-        return false;
+    ~SnakeGame() {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
     }
 
-    return true;
-}
-
-// Load tài nguyên
-bool LoadMedia() {
-    font = TTF_OpenFont("arial.ttf", 28);
-    if (!font) {
-        std::cout << "Lỗi tải font: " << TTF_GetError() << std::endl;
-        return false;
+    void run() {
+        while (running) {
+            handleEvents();
+            update();
+            render();
+            SDL_Delay(100);
+        }
     }
 
-    imageTexture = LoadTexture("image.png");
-    if (!imageTexture) return false;
+private:
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    bool running;
+    std::vector<Point> snake;
+    Point direction;
+    Point food;
 
-    music = Mix_LoadMUS("music.mp3");
-    if (!music) {
-        std::cout << "Lỗi tải nhạc: " << Mix_GetError() << std::endl;
-        return false;
+    void handleEvents() {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
+            else if (event.type == SDL_KEYDOWN) {
+                switch (event.key.keysym.sym) {
+                case SDLK_UP: if (direction.y == 0) direction = { 0, -1 }; break;
+                case SDLK_DOWN: if (direction.y == 0) direction = { 0, 1 }; break;
+                case SDLK_LEFT: if (direction.x == 0) direction = { -1, 0 }; break;
+                case SDLK_RIGHT: if (direction.x == 0) direction = { 1, 0 }; break;
+                }
+            }
+        }
     }
 
-    return true;
-}
+    void update() {
+        Point newHead = { snake[0].x + direction.x, snake[0].y + direction.y };
 
-// Vẽ màn hình
-void Render() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+        if (newHead.x < 0 || newHead.y < 0 || newHead.x >= SCREEN_WIDTH / CELL_SIZE || newHead.y >= SCREEN_HEIGHT / CELL_SIZE) {
+            running = false;
+            return;
+        }
 
-    SDL_Rect imgRect = { 150, 100, 500, 300 };
-    SDL_RenderCopy(renderer, imageTexture, nullptr, &imgRect);
+        for (const auto& segment : snake) {
+            if (newHead.x == segment.x && newHead.y == segment.y) {
+                running = false;
+                return;
+            }
+        }
 
-    SDL_Color white = { 255, 255, 255 };
-    SDL_Texture* textTexture = RenderText("SDL2 Test: Image, Text, Sound", white);
-    SDL_Rect textRect = { 200, 450, 400, 50 };
-    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-    SDL_DestroyTexture(textTexture);
+        snake.insert(snake.begin(), newHead);
+        if (newHead.x == food.x && newHead.y == food.y) {
+            spawnFood();
+        }
+        else {
+            snake.pop_back();
+        }
+    }
 
-    SDL_RenderPresent(renderer);
-}
+    void render() {
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
 
-// Giải phóng bộ nhớ
-void Cleanup() {
-    SDL_DestroyTexture(imageTexture);
-    Mix_FreeMusic(music);
-    TTF_CloseFont(font);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        for (const auto& segment : snake) {
+            SDL_Rect rect = { segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE };
+            SDL_RenderFillRect(renderer, &rect);
+        }
 
-    Mix_Quit();
-    TTF_Quit();
-    IMG_Quit();
-    SDL_Quit();
-}
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        SDL_Rect foodRect = { food.x * CELL_SIZE, food.y * CELL_SIZE, CELL_SIZE, CELL_SIZE };
+        SDL_RenderFillRect(renderer, &foodRect);
+
+        SDL_RenderPresent(renderer);
+    }
+    void spawnFood() {
+        srand(time(0));
+        food = { rand() % (SCREEN_WIDTH / CELL_SIZE), rand() % (SCREEN_HEIGHT / CELL_SIZE) };
+    }
+};
 
 int main(int argc, char* argv[]) {
-    if (!InitSDL()) return 1;
-    if (!LoadMedia()) return 1;
-
-    Mix_PlayMusic(music, -1);
-
-    bool running = true;
-    SDL_Event e;
-    while (running) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) running = false;
-        }
-        Render();
-        SDL_Delay(16);
-    }
-
-    Cleanup();
+    SnakeGame game;
+    game.run();
     return 0;
 }
