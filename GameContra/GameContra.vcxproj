@@ -130,7 +130,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseFunction.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseFunction.h" />
+    <ClInclude Include="BaseObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
