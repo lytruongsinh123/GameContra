@@ -13,6 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\BaseManges">
+      <UniqueIdentifier>{dacb1e35-64cd-4117-9bdf-59af8ad7eb4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BaseComponents">
+      <UniqueIdentifier>{160b34f2-81b4-4f8d-b281-a5caf88cdf1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BaseScenes">
+      <UniqueIdentifier>{04abcbec-d953-4b0e-9839-dfd1aa63da26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BaseSpirits">
+      <UniqueIdentifier>{b017984d-ca86-4326-a68e-8da0e36295f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BaseData">
+      <UniqueIdentifier>{193c56c8-7233-438a-a4c9-f42fee5998e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{e9460576-7326-4c3c-b8d0-7f8c3be7b89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{2ab14d5b-2508-46e6-9dba-0d051efe4f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{93ffe71a-f3ea-4f4d-8643-78b7c9b9cc55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spirites">
+      <UniqueIdentifier>{74aaacc4-21c1-4ec9-990d-ec3e627d2d29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
