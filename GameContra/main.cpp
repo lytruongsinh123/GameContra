@@ -1,10 +1,10 @@
-﻿
+﻿#include "SDL.h"
 #include "stdafx.h"
 #include "BaseFunction.h"
 #include "BaseObject.h"
-#include "SDL.h"
 
-BaseObject g_backgorund;
+
+BaseObject g_background;
 
 bool InitData() { // Khoi tao SDL
 	bool success = true;
