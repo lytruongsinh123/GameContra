@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "BaseFunction.h"
 #include "BaseObject.h"
+#include "SDL.h"
 
 BaseObject g_backgorund;
 
@@ -13,7 +14,7 @@ bool InitData() { // Khoi tao SDL
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); //Set ti le chat luong cua renderer
 
-	g_window = SDL_CreateWindow("Game Contra", SDL_WINDOWPOS_UNDERINED, SDL_WINDOWPOS_UNDERFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // Tao cua so
+	g_window = SDL_CreateWindow("Game Contra", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // Tao cua so
 
 	if(g_window == NULL) {
 		success = false;
