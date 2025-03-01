@@ -1,4 +1,4 @@
-#ifndef BASE_FUNCTION_H_
+﻿#ifndef BASE_FUNCTION_H_
 #define BASE_FUNCTION_H_
 
 #include <windows.h>
@@ -25,5 +25,17 @@ const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
 const int RENDER_DRAW_COLOR = 0XFF;
+#define TILE_SIZE  64// Định nghĩa mắt lưới
+#define MAX_MAP_X  400
+#define MAX_MAP_Y  10
+
+typedef struct Map {
+	int start_X_; // ví dụ vị trí ô thứ 10 * 64 = 640
+	int start_Y_;
+	int max_X_; // chỉ số ô theo chiều X = start_X_ / TILE_SIZE ( Lấy phần nguyên )
+	int max_Y_; // chỉ số ô theo chiều Y = start_X_ / TILE_SIZE ( Lấy phần nguyên )
+	int tile[MAX_MAP_Y][MAX_MAP_X];
+	char* file_name_;
+};
 #endif // !BASE_FUNCTION_H_
 

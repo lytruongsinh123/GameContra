@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "BaseFunction.h"
 #include "BaseObject.h"
+#include "Game_map.h"
 BaseObject g_background;
 bool InitData() { // Khoi tao SDL
 	bool success = true;
@@ -57,6 +58,12 @@ int main(int argc, char* argv[]) {
 	if (LoadBackground() == false)
 		return -1;
 
+
+
+	GameMap game_map;
+	game_map.LoadMap("map//map01.dat");
+	game_map.LoadTiles(g_screen);
+
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		while(SDL_PollEvent(&g_event) != 0) {
@@ -69,6 +76,7 @@ int main(int argc, char* argv[]) {
 		SDL_RenderClear(g_screen); // Xoa renderer
 
 		g_background.Render(g_screen, NULL); // Hien thi background
+		game_map.DrawMap(g_screen);
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 	}
