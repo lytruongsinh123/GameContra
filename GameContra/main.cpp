@@ -2,10 +2,7 @@
 #include "stdafx.h"
 #include "BaseFunction.h"
 #include "BaseObject.h"
-
-
 BaseObject g_background;
-
 bool InitData() { // Khoi tao SDL
 	bool success = true;
 	int ret = SDL_Init(SDL_INIT_VIDEO);
