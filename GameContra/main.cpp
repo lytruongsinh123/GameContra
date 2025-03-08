@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
 
 
 
-	GameMap game_map;
-	game_map.LoadMap("map//map01.dat");
-	game_map.LoadTiles(g_screen);
+	GameMap game_Map;
+	game_Map.LoadMap("map//map01.dat");
+	game_Map.LoadTiles(g_screen);
 
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
 		SDL_RenderClear(g_screen); // Xoa renderer
 
 		g_background.Render(g_screen, NULL); // Hien thi background
-		game_map.DrawMap(g_screen);
+		game_Map.DrawMap(g_screen);
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 	}
