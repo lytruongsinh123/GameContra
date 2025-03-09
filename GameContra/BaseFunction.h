@@ -35,7 +35,7 @@ typedef struct  {
 	int max_X_; // chỉ số ô theo chiều X = start_X_ / TILE_SIZE ( Lấy phần nguyên )
 	int max_Y_; // chỉ số ô theo chiều Y = start_X_ / TILE_SIZE ( Lấy phần nguyên )
 	int tile[MAX_MAP_Y][MAX_MAP_X];
-	char* file_name_;
+	const char* file_name_;
 
 } Map;
 #endif // !BASE_FUNCTION_H_

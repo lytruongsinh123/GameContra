@@ -12,9 +12,9 @@ public:
 // Kết hợp với TileMat xây dựng map fill toàn bộ tilemat vòa vị trí ô vuông của map
 class GameMap {
 public:
-	GameMap() { ; }
+	GameMap() : game_map_() { ; } 
 	~GameMap() { ; }
-	void LoadMap(char* name);
+	void LoadMap(const char* name);
 	void LoadTiles(SDL_Renderer* screen);
 	void DrawMap(SDL_Renderer* screen);
 private:
@@ -22,3 +22,8 @@ private:
 	TileMat tile_mat[MAX_TILES]; // Đối tượng hình ảnh có thể hình ảnh màu xanh , xam, đỏ ....  (DẠNG MAP)..
 };
 #endif // !GAME_MAP_H
+
+//Cú pháp : game_map_() là một phần của Member Initialization List(Danh sách khởi tạo thành viên) trong C++.
+//
+//Khi một đối tượng của GameMap được tạo ra, tất cả thành viên của nó(bao gồm game_map_) cũng cần được khởi tạo.
+//game_map_() đảm bảo rằng game_map_ được khởi tạo bằng constructor mặc định của lớp hoặc struct mà nó thuộc về.
