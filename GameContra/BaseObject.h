@@ -19,7 +19,7 @@ public:
 	SDL_Rect GetRect() const { return rect_; } // Lay kich thuoc cua hinh anh
 	SDL_Texture* GetObject() const { return p_object_; } // Lay hinh anh
 
-	bool LoadImg(const std::string path, SDL_Renderer* screen); // Load hinh anh tu file len man hinh
+	virtual bool LoadImg(const std::string path, SDL_Renderer* screen); // Load hinh anh tu file len man hinh
 	void Render(SDL_Renderer* des, const SDL_Rect* clip = NULL); // Hien thi
 	void Free();
 protected:

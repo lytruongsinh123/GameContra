@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="BaseFunction.cpp" />
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="CharacterObject.cpp" />
     <ClCompile Include="game_map.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.h" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="BaseFunction.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="Game_map.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

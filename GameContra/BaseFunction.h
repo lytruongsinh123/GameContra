@@ -28,7 +28,13 @@ const int RENDER_DRAW_COLOR = 0XFF;
 #define TILE_SIZE  64// Định nghĩa mắt lưới
 #define MAX_MAP_X  400
 #define MAX_MAP_Y  10
-
+typedef struct  {
+	int left_; // di chuyển sang trái 
+	int right_; // ______________phải
+	int up_;
+	int down_;
+	int jump_;
+} Input;
 typedef struct  {
 	int start_X_; // ví dụ vị trí ô thứ 10 * 64 = 640
 	int start_Y_;
