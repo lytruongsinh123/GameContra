@@ -13,7 +13,7 @@ public:
 	bool LoadImg(std::string path, SDL_Renderer* screen);
 	void Show(SDL_Renderer* des);
 	void HandleInputAction(SDL_Event events, SDL_Renderer* screen);
-
+	void set_clips(); //xử lý animation
 private:
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_
 	float y_val_; 

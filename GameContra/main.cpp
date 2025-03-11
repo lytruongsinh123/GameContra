@@ -3,6 +3,7 @@
 #include "BaseFunction.h"
 #include "BaseObject.h"
 #include "Game_map.h"
+#include "CharacterObject.h"
 BaseObject g_background;
 bool InitData() { // Khoi tao SDL
 	bool success = true;
@@ -64,12 +65,19 @@ int main(int argc, char* argv[]) {
 	game_Map.LoadMap("map//map01.dat");
 	game_Map.LoadTiles(g_screen);
 
+
+	MainObject p_player;
+	p_player.LoadImg("img//player_right.png", g_screen);
+	p_player.set_clips();
+
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		while(SDL_PollEvent(&g_event) != 0) {
 			if(g_event.type == SDL_QUIT) {
 				is_quit = true;
 			}
+
+			p_player.HandleInputAction(g_event, g_screen);
 		}
 
 		SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR); // Set mau cho renderer
@@ -77,6 +85,9 @@ int main(int argc, char* argv[]) {
 
 		g_background.Render(g_screen, NULL); // Hien thi background
 		game_Map.DrawMap(g_screen);
+
+
+		p_player.Show(g_screen);
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 	}
