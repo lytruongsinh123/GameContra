@@ -77,3 +77,5 @@ void GameMap::DrawMap(SDL_Renderer* screen) {
 		map_y++;
 	}
 }
+
+// DU MA THANG HOANG

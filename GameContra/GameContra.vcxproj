@@ -133,7 +133,7 @@
     <ClCompile Include="BaseFunction.cpp" />
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
-    <ClCompile Include="game_map.cpp" />
+    <ClCompile Include="Game_map.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.h" />
   </ItemGroup>
