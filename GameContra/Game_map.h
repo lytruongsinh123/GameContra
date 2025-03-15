@@ -12,11 +12,12 @@ public:
 // Kết hợp với TileMat xây dựng map fill toàn bộ tilemat vòa vị trí ô vuông của map
 class GameMap {
 public:
-	GameMap() : game_map_() { ; } 
+	GameMap() : game_map_() { ; }
 	~GameMap() { ; }
 	void LoadMap(const char* name);
 	void LoadTiles(SDL_Renderer* screen);
 	void DrawMap(SDL_Renderer* screen);
+	Map getMap() const { return game_map_; };
 private:
 	Map game_map_;
 	TileMat tile_mat[MAX_TILES]; // Đối tượng hình ảnh có thể hình ảnh màu xanh , xam, đỏ ....  (DẠNG MAP)..

@@ -22,8 +22,8 @@ void GameMap::LoadMap(const char* name) {
 			}
 		}
 	}
-	game_map_.max_X_ = (game_map_.max_X_ + 1)* TILE_SIZE;
-	game_map_.max_Y_ = (game_map_.max_Y_ + 1)* TILE_SIZE;
+	game_map_.max_X_ = (game_map_.max_X_ + 1) * TILE_SIZE;
+	game_map_.max_Y_ = (game_map_.max_Y_ + 1) * TILE_SIZE;
 	game_map_.start_X_ = 0;
 	game_map_.start_Y_ = 0;
 	game_map_.file_name_ = name;
@@ -52,7 +52,7 @@ void GameMap::LoadTiles(SDL_Renderer* screen) {
 void GameMap::DrawMap(SDL_Renderer* screen) {
 	int x1 = 0;
 	int x2 = 0;
-	int y1 = 0; 
+	int y1 = 0;
 	int y2 = 0;
 	int map_x = 0;
 	int map_y = 0;
@@ -77,5 +77,3 @@ void GameMap::DrawMap(SDL_Renderer* screen) {
 		map_y++;
 	}
 }
-
-// DU MA THANG HOANG

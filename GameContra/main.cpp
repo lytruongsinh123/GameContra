@@ -15,21 +15,22 @@ bool InitData() { // Khoi tao SDL
 
 	g_window = SDL_CreateWindow("Game Contra", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); // Tao cua so
 
-	if(g_window == NULL) {
+	if (g_window == NULL) {
 		success = false;
-	} else {
+	}
+	else {
 		g_screen = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED); // Gan renderer cho cua so
-			if(g_screen == NULL) 
+		if (g_screen == NULL)
+			success = false;
+		else {
+			SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
+			int imgFlags = IMG_INIT_PNG;
+			if (!(IMG_Init(imgFlags) && imgFlags))
 				success = false;
-			else {
-				SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
-				int imgFlags = IMG_INIT_PNG;
-				if (!(IMG_Init(imgFlags) && imgFlags))
-					success = false;
-				}
-			}
-			return success;
-} 
+		}
+	}
+	return success;
+}
 
 bool LoadBackground() { // Load background
 	bool ret = g_background.LoadImg("img//background.png", g_screen);  // Load background from file
@@ -72,8 +73,8 @@ int main(int argc, char* argv[]) {
 
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
-		while(SDL_PollEvent(&g_event) != 0) {
-			if(g_event.type == SDL_QUIT) {
+		while (SDL_PollEvent(&g_event) != 0) {
+			if (g_event.type == SDL_QUIT) {
 				is_quit = true;
 			}
 
@@ -85,8 +86,9 @@ int main(int argc, char* argv[]) {
 
 		g_background.Render(g_screen, NULL); // Hien thi background
 		game_Map.DrawMap(g_screen);
+		Map map_data = game_map_.getMap();
 
-
+		p_player.DoPlayer(map_data);
 		p_player.Show(g_screen);
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
@@ -95,5 +97,3 @@ int main(int argc, char* argv[]) {
 	close();
 	return 0;
 }
-
-#

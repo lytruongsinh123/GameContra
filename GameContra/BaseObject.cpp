@@ -34,13 +34,13 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen) {
 	return p_object_ != NULL; // Neu p_object khac NULL thi return true
 }
 
-void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip /* = NULL */) { 
+void BaseObject::Render(SDL_Renderer* des, const SDL_Rect* clip /* = NULL */) {
 	SDL_Rect renderquad = { rect_.x, rect_.y, rect_.w, rect_.h }; // Dinh vi tri va kich thuoc cua hinh anh
-	SDL_RenderCopy(des, p_object_, clip, &renderquad); 
+	SDL_RenderCopy(des, p_object_, clip, &renderquad);
 }
 
 void BaseObject::Free() { // Xoa hinh anh
-	if(p_object_ !=NULL) {
+	if (p_object_ != NULL) {
 		SDL_DestroyTexture(p_object_);
 		p_object_ = NULL;
 		rect_.w = 0;

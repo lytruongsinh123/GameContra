@@ -20,22 +20,25 @@ const int SCREEN_BPP = 32; // Bit per pixel
 
 
 // COLOR
-const int COLOR_KEY_R = 167; 
+const int COLOR_KEY_R = 167;
 const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
 const int RENDER_DRAW_COLOR = 0XFF;
+
+#define BLANK_TILE 0
 #define TILE_SIZE  64// Định nghĩa mắt lưới
+
 #define MAX_MAP_X  400
 #define MAX_MAP_Y  10
-typedef struct  {
+typedef struct {
 	int left_; // di chuyển sang trái 
 	int right_; // ______________phải
 	int up_;
 	int down_;
 	int jump_;
 } Input;
-typedef struct  {
+typedef struct {
 	int start_X_; // ví dụ vị trí ô thứ 10 * 64 = 640
 	int start_Y_;
 	int max_X_; // chỉ số ô theo chiều X = start_X_ / TILE_SIZE ( Lấy phần nguyên )
