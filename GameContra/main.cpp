@@ -62,9 +62,9 @@ int main(int argc, char* argv[]) {
 
 
 
-	GameMap game_Map;
-	game_Map.LoadMap("map//map01.dat");
-	game_Map.LoadTiles(g_screen);
+	GameMap game_map_;
+	game_map_.LoadMap("map//map01.dat");
+	game_map_.LoadTiles(g_screen);
 
 
 	MainObject p_player;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
 		SDL_RenderClear(g_screen); // Xoa renderer
 
 		g_background.Render(g_screen, NULL); // Hien thi background
-		game_Map.DrawMap(g_screen);
+		game_map_.DrawMap(g_screen);
 		Map map_data = game_map_.getMap();
 
 		p_player.DoPlayer(map_data);
