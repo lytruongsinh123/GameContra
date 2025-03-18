@@ -16,6 +16,8 @@ MainObject::MainObject() {
 	input_type_.down_ = 0;
 	input_type_.up_ = 0;
 	on_ground_ = false;
+	map_x_ = 0;
+	map_y_ = 0;
 
 }
 MainObject::~MainObject() {
@@ -96,8 +98,8 @@ void MainObject::Show(SDL_Renderer* des) {
 		frame_ = 0; // nếu frame lớn hơn 8 thì trở về frame đầu tiên
 	}
 
-	rect_.x = x_pos_; // vị trí của nhân vật
-	rect_.y = y_pos_;
+	rect_.x = x_pos_ - map_x_; // vị trí của nhân vật
+	rect_.y = y_pos_ - map_y_;
 
 	SDL_Rect* current_clip = &frame_clip_[frame_]; // lấy frame hiện tại của nhân vật
 
@@ -107,7 +109,7 @@ void MainObject::Show(SDL_Renderer* des) {
 }
 
 void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // hàm xử lý sự kiện
-	if (events.type == SDL_KEYDOWN) {
+	if (events.type == SDL_KEYDOWN) { // ấn phím xuống
 		switch (events.key.keysym.sym) {
 		case SDLK_RIGHT:
 		{
@@ -149,7 +151,7 @@ void MainObject::DoPlayer(Map& map_data) {
 		y_val_ = MAX_FALL_SPEED;
 	}
 
-	if (input_type_.left_ == 1) {
+	if (input_type_.left_ == 1) { // di chuyển sang bên trái + 1 lượng PLAYER_SPEED
 		x_val_ -= PLAYER_SPEED;
 	}
 	else if (input_type_.right_ == 1) {
@@ -157,18 +159,38 @@ void MainObject::DoPlayer(Map& map_data) {
 	}
 
 	CheckToMap(map_data);
+	CenterEntityOnMap(map_data);
 }
 
+void MainObject::CenterEntityOnMap(Map& map_data) {
+	map_data.start_X_ = x_pos_ - (SCREEN_WIDTH / 2); // khi nhân vật di chuyển được 1/ 2 màn hình thì bản đồ được cuốn theo
+	if (map_data.start_X_ < 0) {
+		map_data.start_X_ = 0;
+	}
+	else if (map_data.start_X_ + SCREEN_WIDTH >= map_data.max_X_) {
+		map_data.start_X_ = map_data.max_X_ - SCREEN_WIDTH;
+	}
+
+
+	// Di chuyển bản đồ theo chiều dọc 
+	map_data.start_Y_ = y_pos_ - (SCREEN_HEIGHT / 2);
+	if (map_data.start_Y_ < 0) {
+		map_data.start_Y_ = 0;
+	}
+	else if (map_data.start_Y_ + SCREEN_HEIGHT >= map_data.max_Y_) {
+		map_data.start_Y_ = map_data.max_Y_ - SCREEN_HEIGHT;
+	}
+}
 void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va chạm với map
-	int x1 = 0;
+	int x1 = 0; // giới hạn kiểm tra từ A đến B theo chiều x 
 	int x2 = 0;
 
-	int y1 = 0;
+	int y1 = 0; // giới hạn kiểm tra từ A đến B theo chiều y
 	int y2 = 0;
 
 
 
-	//Check horizontal
+	//kiểm tra theo chiều ngang
 	int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
 
 	x1 = (x_pos_ + x_val_) / TILE_SIZE; // x1 là vị trí của nhân vật chia cho kích thước của ô vuông
@@ -177,15 +199,24 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	y1 = (y_pos_) / TILE_SIZE;
 	y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
 
+
+	/*
+	   x1, y1 ******** x2, y1
+	   *
+	   *
+	   *
+	   x1, y2 ******** x2,y2
+	
+	*/
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
 		if (x_val_ > 0) {// nhân  vật đang di chuyển qua phải
-			if (map_data.tile[y1][y2] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE) {
+			if (map_data.tile[y1][x2] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE) {
 				x_pos_ = x2 * TILE_SIZE;
 				x_pos_ -= (width_frame_ + 1);
 				x_val_ = 0;
 			}
 		}
-		else if (x_val_ < 0) {
+		else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
 			if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y2][x1] != BLANK_TILE) {
 				x_pos_ = (x1 + 1) * TILE_SIZE;
 				x_val_ = 0;
@@ -193,16 +224,16 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 		}
 	}
 
-	//Check vertical
+	//Check theo chiều dọc
 	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
 	x1 = (x_pos_) / TILE_SIZE;
-	x2 = (x_pos_ + width_min - 1) / TILE_SIZE;
+	x2 = (x_pos_ + width_min) / TILE_SIZE;
 
 	y1 = (y_pos_ + y_val_) / TILE_SIZE;
-	y2 = (y_pos_ + y_val_ + height_min - 1) / TILE_SIZE;
+	y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
 
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
-		if (y_val_ > 0) {
+		if (y_val_ > 0) { // nhân vật rơi xuống
 			if (map_data.tile[y2][x1] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE) {
 				y_pos_ = y2 * TILE_SIZE;
 				y_pos_ -= (height_frame_ + 1);
@@ -210,7 +241,7 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				on_ground_ = true;
 			}
 		}
-		else if (y_val_ < 0) {
+		else if (y_val_ < 0) { // nhân vật nhảy lên
 			if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE) {
 				y_pos_ = (y1 + 1) * TILE_SIZE;
 				y_val_ = 0;
@@ -220,10 +251,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 
 	x_pos_ += x_val_;
 	y_pos_ += y_val_;
-	if (x_pos_ < 0) {
+	if (x_pos_ < 0) { // lùi đến đít bản đồ thì dùng lại
 		x_pos_ = 0;
 	}
-	else if (x_pos_ + width_frame_ > map_data.max_X_) {
+	else if (x_pos_ + width_frame_ > map_data.max_X_) { // quá giới hạn bản đồ thì dùng lại
 		x_pos_ = map_data.max_X_ - width_frame_ - 1;
 	}
 }

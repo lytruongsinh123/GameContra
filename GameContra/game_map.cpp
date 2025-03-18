@@ -34,7 +34,7 @@ void GameMap::LoadTiles(SDL_Renderer* screen) {
 	char file_img[20];
 	FILE* fp = NULL;
 	for (int i = 0; i < MAX_TILES; i++) {
-		sprintf_s(file_img, "map/%d.png", i); // ví dụ chuyển file map/1.png vào mảng file_img
+		sprintf_s(file_img, "map_good/%d.png", i); // ví dụ chuyển file map/1.png vào mảng file_img
 
 		fopen_s(&fp, file_img, "rb");
 		// Nếu fp == NULL thì tấm ảnh ko load được 

@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
 
 	GameMap game_map_;
-	game_map_.LoadMap("map//map01.dat");
+	game_map_.LoadMap("map_good//map01.dat");
 	game_map_.LoadTiles(g_screen);
 
 
@@ -88,8 +88,15 @@ int main(int argc, char* argv[]) {
 		game_map_.DrawMap(g_screen);
 		Map map_data = game_map_.getMap();
 
+
+		p_player.SetMapXY(map_data.start_X_, map_data.start_Y_);
 		p_player.DoPlayer(map_data);
 		p_player.Show(g_screen);
+
+
+		game_map_.SetMap(map_data); // cập nhật vị trí mới cho start_X_ và start_Y_
+		game_map_.DrawMap(g_screen); // vẽ lại map
+
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 	}

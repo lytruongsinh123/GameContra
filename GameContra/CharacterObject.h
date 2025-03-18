@@ -6,7 +6,7 @@
 
 #define GRAVITY_SPEED 0.8 // tốc độ rơi
 #define MAX_FALL_SPEED 10 // tốc độ rơi tối đa
-#define PLAYER_SPEED  0.5// tốc độ di chuyển của nhân vật
+#define PLAYER_SPEED  8// tốc độ di chuyển của nhân vật
 
 class MainObject : public BaseObject {
 public:
@@ -23,7 +23,8 @@ public:
 
 	void DoPlayer(Map& map_data); // xử lý va chạm với map
 	void CheckToMap(Map& map_data); // kiểm tra va chạm với map
-
+	void SetMapXY(const int map_x, const int map_y) { map_x_ = map_x; map_y_ = map_y; }
+	void CenterEntityOnMap(Map& map_data);
 private:
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_
 	float y_val_;
@@ -37,5 +38,7 @@ private:
 	Input input_type_; // Lưu trạng thái nhân vật 
 	int frame_; // Lưu chỉ số frame hiện tại
 	int status_; // Lưu trạng thái nhân vật là left hay right phụ thuộc vào button sang trái sang phải lên xuống 
+	int map_x_; // lưu vị trí nhân vật trên map
+	int map_y_; // lưu vị trí nhân vật trên map
 };
 #endif
