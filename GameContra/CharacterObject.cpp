@@ -79,13 +79,15 @@ void MainObject::set_clips() {  // trạng thái từng frame của nhân vật
 }
 
 void MainObject::Show(SDL_Renderer* des) {
-	if (status_ == WALK_LEFT) {
-		LoadImg("img//player_left.png", des);
+	if (on_ground_ == true) {
+		if (status_ == WALK_LEFT) {
+			LoadImg("img//player_left1.png", des);
+		}
+		else {
+			LoadImg("img//player_right1.png", des);
+		}
 	}
-	else {
-		LoadImg("img//player_right.png", des);
-	}
-
+	
 	if (input_type_.left_ == 1 || input_type_.right_ == 1) { // Ấn nút di chuyển trái hoặc phải
 		frame_++; // tăng frame lên 1 để tạo hiệu ứng di chuyển
 	}
@@ -116,6 +118,12 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			status_ = WALK_RIGHT;
 			input_type_.right_ = 1;
 			input_type_.left_ = 0;
+			if (on_ground_ == true) {
+				LoadImg("img//player_right1.png", screen);
+			}
+			else {
+				LoadImg("img//jum_right1.png", screen);
+			}
 		}
 		break;
 		case SDLK_LEFT:
@@ -123,6 +131,12 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			status_ = WALK_LEFT;
 			input_type_.left_ = 1;
 			input_type_.right_ = 0;
+			if (on_ground_ == true) {
+				LoadImg("img//player_right1.png", screen);
+			}
+			else {
+				LoadImg("img//jum_left1.png", screen);
+			}
 		}
 		break;
 		}
@@ -139,6 +153,11 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			input_type_.left_ = 0;
 		}
 		break;
+		}
+	}
+	if (events.type == SDL_MOUSEBUTTONDOWN) {
+		if (events.button.button == SDL_BUTTON_RIGHT) {
+			input_type_.jump_ = 1;
 		}
 	}
 }
@@ -158,6 +177,13 @@ void MainObject::DoPlayer(Map& map_data) {
 		x_val_ += PLAYER_SPEED;
 	}
 
+	if (input_type_.jump_ == 1) {
+		if (on_ground_ == true) { // nếu nhân vật đang ở trên mặt đất
+			y_val_ = -PLAYER_JUMP_VAL; // nhảy lêne;
+		}
+		on_ground_ = false;
+		input_type_.jump_ = 0;
+	}
 	CheckToMap(map_data);
 	CenterEntityOnMap(map_data);
 }
@@ -187,8 +213,6 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 
 	int y1 = 0; // giới hạn kiểm tra từ A đến B theo chiều y
 	int y2 = 0;
-
-
 
 	//kiểm tra theo chiều ngang
 	int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;

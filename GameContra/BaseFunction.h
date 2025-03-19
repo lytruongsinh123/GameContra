@@ -16,7 +16,7 @@ static SDL_Event g_event; // event
 const int SCREEN_WIDTH = 1280; // Width of screen = 1280
 const int SCREEN_HEIGHT = 640; // Height of screen = 640
 // Dinh dang man hinh
-const int SCREEN_BPP = 32; // Bit per pixel
+const int SCREEN_BPP = 35; // Bit per pixel
 
 
 // COLOR
@@ -24,6 +24,9 @@ const int COLOR_KEY_R = 167;
 const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
+
+// Screen
+const int FRAME_PER_SECOND = 32; // số frame mỗi giây
 const int RENDER_DRAW_COLOR = 0XFF;
 
 #define BLANK_TILE 0

@@ -134,6 +134,7 @@
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
     <ClCompile Include="Game_map.cpp" />
+    <ClCompile Include="ImpTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.h" />
   </ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="Game_map.h" />
+    <ClInclude Include="ImpTimer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
