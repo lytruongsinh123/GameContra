@@ -18,6 +18,7 @@ MainObject::MainObject() {
 	on_ground_ = false;
 	map_x_ = 0;
 	map_y_ = 0;
+	come_back_time_ = 0;
 
 }
 MainObject::~MainObject() {
@@ -99,15 +100,15 @@ void MainObject::Show(SDL_Renderer* des) {
 	if (frame_ >= 8) {
 		frame_ = 0; // nếu frame lớn hơn 8 thì trở về frame đầu tiên
 	}
+	if (come_back_time_ == 0) {
+		rect_.x = x_pos_ - map_x_; // vị trí của nhân vật
+		rect_.y = y_pos_ - map_y_;
+		SDL_Rect* current_clip = &frame_clip_[frame_]; // lấy frame hiện tại của nhân vật
 
-	rect_.x = x_pos_ - map_x_; // vị trí của nhân vật
-	rect_.y = y_pos_ - map_y_;
+		SDL_Rect renderQuad = { rect_.x, rect_.y, width_frame_, height_frame_ }; // chứa tọa độ và kích thước của nhân vật 
 
-	SDL_Rect* current_clip = &frame_clip_[frame_]; // lấy frame hiện tại của nhân vật
-
-	SDL_Rect renderQuad = { rect_.x, rect_.y, width_frame_, height_frame_ }; // chứa tọa độ và kích thước của nhân vật 
-
-	SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
+		SDL_RenderCopy(des, p_object_, current_clip, &renderQuad);
+	}
 }
 
 void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // hàm xử lý sự kiện
@@ -163,29 +164,46 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 }
 
 void MainObject::DoPlayer(Map& map_data) {
-	x_val_ = 0;
-	y_val_ += 0.8; // tốc độ rơi
-
-	if (y_val_ >= MAX_FALL_SPEED) {
-		y_val_ = MAX_FALL_SPEED;
-	}
-
-	if (input_type_.left_ == 1) { // di chuyển sang bên trái + 1 lượng PLAYER_SPEED
-		x_val_ -= PLAYER_SPEED;
-	}
-	else if (input_type_.right_ == 1) {
-		x_val_ += PLAYER_SPEED;
-	}
-
-	if (input_type_.jump_ == 1) {
-		if (on_ground_ == true) { // nếu nhân vật đang ở trên mặt đất
-			y_val_ = -PLAYER_JUMP_VAL; // nhảy lêne;
+	
+	if (come_back_time_ == 0) {  // nếu thời gian comeback = 0 thì nhân vật di chuyển bình thường
+		x_val_ = 0;
+		y_val_ += 0.8; // tốc độ rơi
+		if (y_val_ >= MAX_FALL_SPEED) {
+			y_val_ = MAX_FALL_SPEED;
 		}
-		on_ground_ = false;
-		input_type_.jump_ = 0;
+
+		if (input_type_.left_ == 1) { // di chuyển sang bên trái + 1 lượng PLAYER_SPEED
+			x_val_ -= PLAYER_SPEED;
+		}
+		else if (input_type_.right_ == 1) {
+			x_val_ += PLAYER_SPEED;
+		}
+
+		if (input_type_.jump_ == 1) {
+			if (on_ground_ == true) { // nếu nhân vật đang ở trên mặt đất
+				y_val_ = -PLAYER_JUMP_VAL; // nhảy lêne;
+			}
+			on_ground_ = false;
+			input_type_.jump_ = 0;
+		}
+		CheckToMap(map_data);
+		CenterEntityOnMap(map_data);
 	}
-	CheckToMap(map_data);
-	CenterEntityOnMap(map_data);
+	if (come_back_time_ > 0) { // nhân vật đang ở vùng ngoài bản đồ 4 tile map
+		come_back_time_--;
+		if (come_back_time_ == 0) { // nếu rơi ở giữa bản đồ 
+			if (x_pos_ > 256) {
+				x_pos_ -= 256;
+				map_x_ -= 256; // dịch chuyển map
+			}
+			else { // nếu rơi gần điêm xuất phát
+				x_pos_ = 0;
+			}
+			y_pos_ = 0;
+			x_val_ = 0;
+			y_val_ = 0;
+		}
+	}
 }
 
 void MainObject::CenterEntityOnMap(Map& map_data) {
@@ -280,6 +298,9 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	}
 	else if (x_pos_ + width_frame_ > map_data.max_X_) { // quá giới hạn bản đồ thì dùng lại
 		x_pos_ = map_data.max_X_ - width_frame_ - 1;
+	}
+	if (y_pos_ > map_data.max_Y_) {
+		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
 	}
 }
 

@@ -40,5 +40,8 @@ private:
 	int status_; // Lưu trạng thái nhân vật là left hay right phụ thuộc vào button sang trái sang phải lên xuống 
 	int map_x_; // lưu vị trí nhân vật trên map
 	int map_y_; // lưu vị trí nhân vật trên map
+
+
+	int come_back_time_; // thời gian quay trở lại
 };
 #endif
