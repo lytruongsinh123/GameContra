@@ -17,6 +17,7 @@ BaseObject::~BaseObject() {
 
 // Dinh nghia ham LoadImg
 bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen) {
+	Free(); // Xoa BaseObject cũ Mỗi lần loadImg thì phải xóa BaseObject cũ
 	SDL_Texture* new_texture = NULL;
 
 	SDL_Surface* load_surface = IMG_Load(path.c_str()); // Dua surface thanh texture

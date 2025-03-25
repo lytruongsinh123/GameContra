@@ -1,0 +1,33 @@
+﻿
+#ifndef BULLET_OBJECT_H_
+#define BULLET_OBJECT_H_
+#include "BaseObject.h"
+#include "BaseFunction.h"
+class BulletObject : public BaseObject {
+public:
+	BulletObject();
+	~BulletObject();
+	enum BullDir {
+		DIR_RIGHT = 20,
+		DIR_LEFT = 21,
+	};
+	void set_x_val(const int& xVal) { x_val_ = xVal; }
+	void set_y_val(const int& yVal) { y_val_ = yVal; }
+	int get_x_val() const { return x_val_; } // lấy giá trị x_val_ của viên đạn
+	int get_y_val() const { return y_val_; } // lấy giá trị y_val_ của viên đạn
+	void set_is_move(const bool& isMove) { is_move_ = isMove; } // set trạng thái di chuyển của viên đạn
+	bool get_is_move() const { return is_move_; } // lấy trạng thái di chuyển của viên đạn
+
+	void HandleMove(const int& x_border, const int& y_border); // xử lý di chuyển viên đạn
+	void set_bullet_dir(const unsigned int& bulletDir) { buller_dir_ = bulletDir; } // set hướng viên đạn
+	int get_bullet_dir() const { return buller_dir_; } // lấy hướng viên đạn
+private:
+	int x_val_; // lượng di chuyển viên đạn theo chiều x
+	int y_val_; // lượng di chuyển viên đạn theo chiều y
+	bool is_move_; // kiểm tra viên đạn có di chuyển không
+	unsigned int buller_dir_; // hướng viên đạn
+}; // lớp đạn kế thừa từ lớp BaseObject
+#endif
+
+// Explain
+// Khi viên đạn bắn từ 0 cho đến vị trí nào đó trong màn hình trường hợp viên đạn vượt ra SCREEN_WIDTH thì phải biến mất 

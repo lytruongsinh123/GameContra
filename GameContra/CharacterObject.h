@@ -1,9 +1,9 @@
 ﻿#ifndef MAIN_OBJECT_H
 #define MAIN_OBJECT_H
-
+#include <vector>
 #include "BaseFunction.h"
 #include "BaseObject.h"
-
+#include "BulletObject.h"
 #define GRAVITY_SPEED 0.8 // tốc độ rơi
 #define MAX_FALL_SPEED 10 // tốc độ rơi tối đa
 #define PLAYER_SPEED  8// tốc độ di chuyển của nhân vật
@@ -13,8 +13,9 @@ public:
 	MainObject();
 	~MainObject();
 	enum WalkType {
-		WALK_RIGHT = 0,
-		WALK_LEFT = 1,
+		WALK_RIGHT = 1,
+		WALK_LEFT = 2,
+		WALK_NONE = 0
 	};
 	bool LoadImg(std::string path, SDL_Renderer* screen);
 	void Show(SDL_Renderer* des);
@@ -25,7 +26,13 @@ public:
 	void CheckToMap(Map& map_data); // kiểm tra va chạm với map
 	void SetMapXY(const int map_x, const int map_y) { map_x_ = map_x; map_y_ = map_y; }
 	void CenterEntityOnMap(Map& map_data);
+	void UpdateImagePlayer(SDL_Renderer* des);
+	void set_bullet_list(std::vector<BulletObject*> bullet_list) { p_bullet_list_ = bullet_list; }
+	std::vector<BulletObject*> get_bullet_list() const { return p_bullet_list_; } // lấy danh sách đạn
+	void HandleBullet(SDL_Renderer* des);
 private:
+
+	std::vector<BulletObject*> p_bullet_list_; // lưu danh sách đạn
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_
 	float y_val_;
 	float x_pos_; // vị trí

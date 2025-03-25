@@ -9,7 +9,7 @@ MainObject::MainObject() {
 	y_val_ = 0;
 	width_frame_ = 0;
 	height_frame_ = 0;
-	status_ = -1; // chưa biết trạng thái sang trái hay sang phải 
+	status_ = WALK_NONE; // chưa biết trạng thái sang trái hay sang phải 
 	input_type_.left_ = 0;
 	input_type_.right_ = 0;
 	input_type_.jump_ = 0;
@@ -80,15 +80,7 @@ void MainObject::set_clips() {  // trạng thái từng frame của nhân vật
 }
 
 void MainObject::Show(SDL_Renderer* des) {
-	if (on_ground_ == true) {
-		if (status_ == WALK_LEFT) {
-			LoadImg("img//player_left1.png", des);
-		}
-		else {
-			LoadImg("img//player_right1.png", des);
-		}
-	}
-	
+	UpdateImagePlayer(des);
 	if (input_type_.left_ == 1 || input_type_.right_ == 1) { // Ấn nút di chuyển trái hoặc phải
 		frame_++; // tăng frame lên 1 để tạo hiệu ứng di chuyển
 	}
@@ -119,12 +111,7 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			status_ = WALK_RIGHT;
 			input_type_.right_ = 1;
 			input_type_.left_ = 0;
-			if (on_ground_ == true) {
-				LoadImg("img//player_right1.png", screen);
-			}
-			else {
-				LoadImg("img//jum_right1.png", screen);
-			}
+			UpdateImagePlayer(screen);
 		}
 		break;
 		case SDLK_LEFT:
@@ -132,12 +119,7 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			status_ = WALK_LEFT;
 			input_type_.left_ = 1;
 			input_type_.right_ = 0;
-			if (on_ground_ == true) {
-				LoadImg("img//player_right1.png", screen);
-			}
-			else {
-				LoadImg("img//jum_left1.png", screen);
-			}
+			UpdateImagePlayer(screen);
 		}
 		break;
 		}
@@ -159,6 +141,43 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 	if (events.type == SDL_MOUSEBUTTONDOWN) {
 		if (events.button.button == SDL_BUTTON_RIGHT) {
 			input_type_.jump_ = 1;
+		}
+		else if (events.button.button == SDL_BUTTON_LEFT) {
+			// Tạo viên đạn mới
+			BulletObject* p_bullet = new BulletObject();
+			p_bullet->LoadImg("img//threat2_bullet.png", screen);
+
+			if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
+				p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // viên đạn di chuyển sang trái
+				p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
+			}
+			else {
+				p_bullet->set_bullet_dir(BulletObject::DIR_RIGHT); // viên đạn di chuyển sang phải
+				p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
+			}
+			p_bullet->set_x_val(20); // tốc độ di chuyển của viên đạn
+			p_bullet->set_is_move(true); // viên đạn di chuyển
+
+			p_bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách viên đạn
+		}
+	}
+}
+
+void MainObject::HandleBullet(SDL_Renderer* des) {
+	for (int i = 0; i < p_bullet_list_.size(); i++) { // Kiểm tra trong băng bạn có đạn hay không
+		BulletObject* p_bullet = p_bullet_list_.at(i); // lấy ra viên đạn đó
+		if (p_bullet != NULL) { // kiểm tra viên đạn có khác null khôn
+			if (p_bullet->get_is_move()) { // nếu viên đạn di chuyển
+				p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT); // xử lý di chuyển viên đạn
+				p_bullet->Render(des); // liên tục vẽ viên đạn lên màn hình
+			}
+			else {
+				p_bullet_list_.erase(p_bullet_list_.begin() + i); // xóa viên đạn khỏi danh sách
+				if (p_bullet != NULL) {
+					delete p_bullet;
+					p_bullet = NULL;
+				}
+			}
 		}
 	}
 }
@@ -191,10 +210,10 @@ void MainObject::DoPlayer(Map& map_data) {
 	}
 	if (come_back_time_ > 0) { // nhân vật đang ở vùng ngoài bản đồ 4 tile map
 		come_back_time_--;
-		if (come_back_time_ == 0) { // nếu rơi ở giữa bản đồ 
-			if (x_pos_ > 256) {
+		if (come_back_time_ == 0) {   // Reset again
+			on_ground_ = false;
+			if (x_pos_ > 256) { // nếu rơi ở giữa bản đồ
 				x_pos_ -= 256;
-				map_x_ -= 256; // dịch chuyển map
 			}
 			else { // nếu rơi gần điêm xuất phát
 				x_pos_ = 0;
@@ -281,6 +300,9 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				y_pos_ -= (height_frame_ + 1);
 				y_val_ = 0;
 				on_ground_ = true;
+				if (status_ == WALK_NONE) {
+					status_ = WALK_RIGHT;
+				}
 			}
 		}
 		else if (y_val_ < 0) { // nhân vật nhảy lên
@@ -304,3 +326,21 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	}
 }
 
+void MainObject::UpdateImagePlayer(SDL_Renderer* des) {
+	if (on_ground_ == true) {
+		if (status_ == WALK_LEFT) {
+			LoadImg("img//player_left1.png", des);
+		}
+		else {
+			LoadImg("img//player_right1.png", des);
+		}
+	}
+	else {
+		if (status_ == WALK_LEFT) {
+			LoadImg("img//jum_left1.png", des);
+		}
+		else {
+			LoadImg("img//jum_right1.png", des);
+		}
+	}
+}
