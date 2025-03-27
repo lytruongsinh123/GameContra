@@ -26,7 +26,6 @@ MainObject::~MainObject() {
 }
 bool MainObject::LoadImg(std::string path, SDL_Renderer* screen) {
 	bool ret = BaseObject::LoadImg(path, screen);
-
 	if (ret == true) {
 		width_frame_ = rect_.w / 8; // lấy chiều rộng của 1 frame trong ảnh
 		height_frame_ = rect_.h;
@@ -34,7 +33,6 @@ bool MainObject::LoadImg(std::string path, SDL_Renderer* screen) {
 
 	return ret;
 }
-
 void MainObject::set_clips() {  // trạng thái từng frame của nhân vật
 	if (width_frame_ > 0 && height_frame_ > 0) {
 		frame_clip_[0].x = 0;  // lấy frame đầu tiên của nhân vật ở vị trí x = 0
