@@ -148,14 +148,16 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			p_bullet->LoadImg("img//threat2_bullet.png", screen);
 
 			if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
-				p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // viên đạn di chuyển sang trái
+				p_bullet->set_bullet_dir(BulletObject::DIR_DOWN_LEFT); // viên đạn di chuyển sang trái
 				p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
 			}
 			else {
-				p_bullet->set_bullet_dir(BulletObject::DIR_RIGHT); // viên đạn di chuyển sang phải
+				p_bullet->set_bullet_dir(BulletObject::DIR_DOWN_RIGHT); // viên đạn di chuyển sang phải
 				p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
 			}
+
 			p_bullet->set_x_val(20); // tốc độ di chuyển của viên đạn
+			p_bullet->set_y_val(20);
 			p_bullet->set_is_move(true); // viên đạn di chuyển
 
 			p_bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách viên đạn
