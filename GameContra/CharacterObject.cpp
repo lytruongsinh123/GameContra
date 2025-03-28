@@ -136,6 +136,34 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 		break;
 		}
 	}
+	//if (events.type == SDL_MOUSEBUTTONDOWN) {
+	//	if (events.button.button == SDL_BUTTON_RIGHT) {
+	//		input_type_.jump_ = 1;
+	//	}
+	//	else if (events.button.button == SDL_BUTTON_LEFT) {
+	//		// Tạo viên đạn mới
+	//		BulletObject* p_bullet = new BulletObject();
+	//		p_bullet->LoadImg("img//threat2_bullet.png", screen);
+	//		
+	//		if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
+	//			p_bullet->set_bullet_dir(BulletObject::DIR_UP_LEFT); // viên đạn di chuyển sang trái
+	//			p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
+	//		}
+	//		else {
+	//			p_bullet->set_bullet_dir(BulletObject::DIR_UP_RIGHT); // viên đạn di chuyển sang phải
+	//			p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
+	//		}
+
+	//		p_bullet->set_x_val(20); // tốc độ di chuyển của viên đạn
+	//		p_bullet->set_y_val(20);
+	//		p_bullet->set_is_move(true); // viên đạn di chuyển
+
+	//		p_bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách viên đạn
+	//	}
+	//}
+
+
+
 	if (events.type == SDL_MOUSEBUTTONDOWN) {
 		if (events.button.button == SDL_BUTTON_RIGHT) {
 			input_type_.jump_ = 1;
@@ -144,18 +172,44 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			// Tạo viên đạn mới
 			BulletObject* p_bullet = new BulletObject();
 			p_bullet->LoadImg("img//threat2_bullet.png", screen);
+			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+			bool is_up_pressed = currentKeyStates[SDL_SCANCODE_UP];
+			bool is_down_pressed = currentKeyStates[SDL_SCANCODE_DOWN];
+			cout << is_up_pressed << endl;
+			if (is_up_pressed == 1 && is_down_pressed == 0) {
+				if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
+					p_bullet->set_bullet_dir(BulletObject::DIR_UP_LEFT); // viên đạn di chuyển sang trái
+					p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
+				}
+				else {
+					p_bullet->set_bullet_dir(BulletObject::DIR_UP_RIGHT); // viên đạn di chuyển sang phải
+					p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
+				}
+			}
+			if (is_up_pressed == 0 && is_down_pressed == 0) {
+				if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
+					p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // viên đạn di chuyển sang trái
+					p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
+				}
+				else {
+					p_bullet->set_bullet_dir(BulletObject::DIR_RIGHT); // viên đạn di chuyển sang phải
+					p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
+				}
+			}
+			if (is_down_pressed == 1 && is_up_pressed == 0) {
+				if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
+					p_bullet->set_bullet_dir(BulletObject::DIR_DOWN_LEFT); // viên đạn di chuyển sang trái
+					p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
+				}
+				else {
+					p_bullet->set_bullet_dir(BulletObject::DIR_DOWN_RIGHT); // viên đạn di chuyển sang phải
+					p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
+				}
+			}
 
-			if (status_ == WALK_LEFT) { // nếu nhân vật đang di chuyển sang trái
-				p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // viên đạn di chuyển sang trái
-				p_bullet->SetRect(this->rect_.x, this->rect_.y + height_frame_ * 0.28);
-			}
-			else {
-				p_bullet->set_bullet_dir(BulletObject::DIR_RIGHT); // viên đạn di chuyển sang phải
-				p_bullet->SetRect(this->rect_.x + width_frame_ - 20, this->rect_.y + height_frame_ * 0.28);
-			}
 			p_bullet->set_x_val(20); // tốc độ di chuyển của viên đạn
+			p_bullet->set_y_val(20);
 			p_bullet->set_is_move(true); // viên đạn di chuyển
-
 			p_bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách viên đạn
 		}
 	}
