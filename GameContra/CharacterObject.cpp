@@ -19,7 +19,7 @@ MainObject::MainObject() {
 	map_x_ = 0;
 	map_y_ = 0;
 	come_back_time_ = 0;
-
+	money_count_ = 0;
 }
 MainObject::~MainObject() {
 
@@ -171,7 +171,8 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 		else if (events.button.button == SDL_BUTTON_LEFT) {
 			// Tạo viên đạn mới
 			BulletObject* p_bullet = new BulletObject();
-			p_bullet->LoadImg("img//threat2_bullet.png", screen);
+			p_bullet->set_bullet_type(BulletObject::SPHERE_BULLET); // Set kiểu của đạn
+			p_bullet->LoadImgBullet(screen);
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 			bool is_up_pressed = currentKeyStates[SDL_SCANCODE_UP];
 			bool is_down_pressed = currentKeyStates[SDL_SCANCODE_DOWN];
@@ -323,16 +324,36 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	*/
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
 		if (x_val_ > 0) {// nhân  vật đang di chuyển qua phải
-			if (map_data.tile[y1][x2] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE) {
-				x_pos_ = x2 * TILE_SIZE;
-				x_pos_ -= (width_frame_ + 1);
-				x_val_ = 0;
+			int val1 = map_data.tile[y1][x2]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
+			int val2 = map_data.tile[y2][x2];
+
+			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+				map_data.tile[y1][x2] = 0; // xóa tiền
+				map_data.tile[y2][x2] = 0;
+				IncreaseMoney(); // tăng tiền
+			}
+			else {
+				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+					x_pos_ = x2 * TILE_SIZE;
+					x_pos_ -= (width_frame_ + 1);
+					x_val_ = 0;
+				}
 			}
 		}
 		else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
-			if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y2][x1] != BLANK_TILE) {
-				x_pos_ = (x1 + 1) * TILE_SIZE;
-				x_val_ = 0;
+			int val1 = map_data.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
+			int val2 = map_data.tile[y2][x1];
+
+			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+				map_data.tile[y1][x1] = 0; // xóa tiền
+				map_data.tile[y2][x1] = 0;
+				IncreaseMoney(); // tăng tiền
+			}
+			else {
+				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+					x_pos_ = (x1 + 1) * TILE_SIZE;
+					x_val_ = 0;
+				}
 			}
 		}
 	}
@@ -347,21 +368,44 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
 		if (y_val_ > 0) { // nhân vật rơi xuống
-			if (map_data.tile[y2][x1] != BLANK_TILE || map_data.tile[y2][x2] != BLANK_TILE) {
-				y_pos_ = y2 * TILE_SIZE;
-				y_pos_ -= (height_frame_ + 1);
-				y_val_ = 0;
-				on_ground_ = true;
-				if (status_ == WALK_NONE) {
-					status_ = WALK_RIGHT;
+			int val1 = map_data.tile[y2][x1];
+			int val2 = map_data.tile[y2][x2];
+
+			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+				map_data.tile[y2][x1] = 0; // xóa tiền
+				map_data.tile[y2][x2] = 0;
+				IncreaseMoney(); // tăng tiền
+			}
+			else {
+				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+					y_pos_ = y2 * TILE_SIZE;
+					y_pos_ -= (height_frame_ + 1);
+					y_val_ = 0;
+					on_ground_ = true;
+					if (status_ == WALK_NONE) {
+						status_ = WALK_RIGHT;
+					}
 				}
 			}
 		}
 		else if (y_val_ < 0) { // nhân vật nhảy lên
-			if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE) {
+			int val1 = map_data.tile[y1][x1];
+			int val2 = map_data.tile[y1][x2];
+			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+				map_data.tile[y1][x1] = 0; // xóa tiền
+				map_data.tile[y1][x2] = 0;
+				IncreaseMoney(); // tăng tiền
+			}
+			else {
+				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+					y_pos_ = (y1 + 1) * TILE_SIZE;
+					y_val_ = 0;
+				}
+			}
+			/*if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE) {
 				y_pos_ = (y1 + 1) * TILE_SIZE;
 				y_val_ = 0;
-			}
+			}*/
 		}
 	}
 
@@ -378,6 +422,9 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	}
 }
 
+void MainObject::IncreaseMoney() {
+	money_count_++;
+}
 void MainObject::UpdateImagePlayer(SDL_Renderer* des) {
 	if (on_ground_ == true) {
 		if (status_ == WALK_LEFT) {

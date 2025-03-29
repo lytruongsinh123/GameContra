@@ -30,8 +30,9 @@ public:
 	void set_bullet_list(std::vector<BulletObject*> bullet_list) { p_bullet_list_ = bullet_list; }
 	std::vector<BulletObject*> get_bullet_list() const { return p_bullet_list_; } // lấy danh sách đạn
 	void HandleBullet(SDL_Renderer* des);
+	void IncreaseMoney(); // tăng tiền
 private:
-
+	int money_count_; // số tiền ăn được
 	std::vector<BulletObject*> p_bullet_list_; // lưu danh sách đạn
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_
 	float y_val_;

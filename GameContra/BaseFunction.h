@@ -34,6 +34,8 @@ const int RENDER_DRAW_COLOR = 0XFF;
 
 #define MAX_MAP_X  400
 #define MAX_MAP_Y  10
+
+#define STATE_MONEY 4 // Chỉ cố của ô tiền
 typedef struct {
 	int left_; // di chuyển sang trái 
 	int right_; // ______________phải
