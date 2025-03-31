@@ -5,6 +5,7 @@
 #include "Game_map.h"
 #include "CharacterObject.h"
 #include "ImpTimer.h"
+#include "ThreatsObject.h"
 BaseObject g_background;
 bool InitData() { // Khoi tao SDL
 	bool success = true;
@@ -41,6 +42,27 @@ bool LoadBackground() { // Load background
 	return true;
 }
 
+std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên bản đồ
+{
+	std::vector<ThreatsObject*> list_threats; // vector chứa các đối tượng trên bản đồ
+
+	ThreatsObject* threats_objs = new ThreatsObject[20]; // có 20 threats trên bản đồ
+
+	for (int i = 0; i < 20; ++i)
+	{
+		ThreatsObject* p_threat = threats_objs + i;
+		if (p_threat != NULL) // chừng nào pointer chưa chỉ đến cuối dãy thì load image từng threat lên
+		{
+			p_threat->LoadImg("img//threat_level.png", g_screen); // load hình ảnh threat
+			p_threat->set_clips();
+			p_threat->set_x_pos(700 + i * 1200); // cách phân bố đều trên 25000 pixels: ông này dùng vòng lặp để cho hiện threat sau mỗi 1200 pixels, vị trí đầu ở điểm pixel thứ 700 (phân bố đều)
+			p_threat->set_y_pos(250); // phân bố ở ngay trên map
+			list_threats.push_back(p_threat);
+		}
+	}
+	return list_threats;
+}
+
 void close() { // Giai phong bo nho 
 	g_background.Free();
 
@@ -74,6 +96,9 @@ int main(int argc, char* argv[]) {
 	p_player.LoadImg("img//player_right1.png", g_screen);
 	p_player.set_clips();
 
+
+	std::vector<ThreatsObject*> threats_list = MakeThreadList(); // tạo 1 threats list
+
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		fps_timer.start(); // lưu thời gian khi bắt đầu game
@@ -101,14 +126,24 @@ int main(int argc, char* argv[]) {
 		game_map_.SetMap(map_data); // cập nhật vị trí mới cho start_X_ và start_Y_
 		game_map_.DrawMap(g_screen); // vẽ lại map
 
+		for (int i = 0; i < threats_list.size(); i++)
+		{
+			ThreatsObject* p_threat = threats_list.at(i); // tức là lấy con trỏ ở vị trí i, nếu ko có thì trả về null
+			if (p_threat != NULL)
+			{
+				p_threat->SetMapXY(map_data.start_X_, map_data.start_Y_); // đặt các threats vào các vị trí trên map theo tọa độ
+				p_threat->DoPlayer(map_data);
+				p_threat->Show(g_screen); // show ra
+			}
 
+		}
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 
 		int real_imp_time = fps_timer.get_ticks(); // lấy thời gian thực sự trôi qua
 		int time_one_frame = 1000 / FRAME_PER_SECOND;  // Thời gian thực hiện 1 frame
 		if (real_imp_time < time_one_frame) {
 			int delay_time = time_one_frame - real_imp_time; // thời gian cần delay
-			if(delay_time >= 0) SDL_Delay(delay_time);
+			if (delay_time >= 0) SDL_Delay(delay_time);
 		}// Nếu thời gian thực tế nhỏ hơn thời gian 1 frame 
 	}
 

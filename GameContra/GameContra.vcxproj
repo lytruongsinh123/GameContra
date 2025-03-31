@@ -138,6 +138,7 @@
     <ClCompile Include="ImpTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.h" />
+    <ClCompile Include="ThreatsObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseFunction.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="Game_map.h" />
     <ClInclude Include="ImpTimer.h" />
+    <ClInclude Include="ThreatsObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
