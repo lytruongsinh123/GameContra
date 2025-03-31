@@ -132,65 +132,63 @@ void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 				x_pos_ -= (width_frame_ + 1);
 				x_val_ = 0;
 			}
-	
-		else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
-			int val1 = gMap.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
-			int val2 = gMap.tile[y2][x1];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
-			{
-				x_pos_ = (x1 + 1) * TILE_SIZE;
-				x_val_ = 0;
+
+			else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
+				int val1 = gMap.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
+				int val2 = gMap.tile[y2][x1];
+				if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+				{
+					x_pos_ = (x1 + 1) * TILE_SIZE;
+					x_val_ = 0;
+				}
 			}
 		}
-	}
 
-	//Check theo chiều dọc
-	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
-	x1 = (x_pos_) / TILE_SIZE;
-	x2 = (x_pos_ + width_min) / TILE_SIZE;
+		//Check theo chiều dọc
+		int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
+		x1 = (x_pos_) / TILE_SIZE;
+		x2 = (x_pos_ + width_min) / TILE_SIZE;
 
-	y1 = (y_pos_ + y_val_) / TILE_SIZE;
-	y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
+		y1 = (y_pos_ + y_val_) / TILE_SIZE;
+		y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
 
-	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
-		if (y_val_ > 0) { // nhân vật rơi xuống
-			int val1 = gMap.tile[y2][x1];
-			int val2 = gMap.tile[y2][x2];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
-			{
-				y_pos_ = y2 * TILE_SIZE;
-				y_pos_ -= (height_frame_ + 1);
-				y_val_ = 0;
-				on_ground_ = true;
+		if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
+			if (y_val_ > 0) { // nhân vật rơi xuống
+				int val1 = gMap.tile[y2][x1];
+				int val2 = gMap.tile[y2][x2];
+				if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+				{
+					y_pos_ = y2 * TILE_SIZE;
+					y_pos_ -= (height_frame_ + 1);
+					y_val_ = 0;
+					on_ground_ = true;
+				}
+			}
+			else if (y_val_ < 0) { // nhân vật nhảy lên
+				int val1 = gMap.tile[y1][x1];
+				int val2 = gMap.tile[y1][x2];
+				if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+				{
+					y_pos_ = (y1 + 1) * TILE_SIZE;
+					y_val_ = 0;
+				}
+				/*if (gMap.tile[y1][x1] != BLANK_TILE || gMap.tile[y1][x2] != BLANK_TILE) {
+					y_pos_ = (y1 + 1) * TILE_SIZE;
+					y_val_ = 0;
+				}*/
 			}
 		}
-		else if (y_val_ < 0) { // nhân vật nhảy lên
-			int val1 = gMap.tile[y1][x1];
-			int val2 = gMap.tile[y1][x2];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
-			{
-				y_pos_ = (y1 + 1) * TILE_SIZE;
-				y_val_ = 0;
-			}
-			/*if (gMap.tile[y1][x1] != BLANK_TILE || gMap.tile[y1][x2] != BLANK_TILE) {
-				y_pos_ = (y1 + 1) * TILE_SIZE;
-				y_val_ = 0;
-			}*/
-		}
-	}
 
-	x_pos_ += x_val_;
-	y_pos_ += y_val_;
-	if (x_pos_ < 0) { // lùi đến đít bản đồ thì dùng lại
-		x_pos_ = 0;
-	}
-	else if (x_pos_ + width_frame_ > gMap.max_X_) { // quá giới hạn bản đồ thì dùng lại
-		x_pos_ = gMap.max_X_ - width_frame_ - 1;
-	}
-	if (y_pos_ > gMap.max_Y_) {
-		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
+		x_pos_ += x_val_;
+		y_pos_ += y_val_;
+		if (x_pos_ < 0) { // lùi đến đít bản đồ thì dùng lại
+			x_pos_ = 0;
+		}
+		else if (x_pos_ + width_frame_ > gMap.max_X_) { // quá giới hạn bản đồ thì dùng lại
+			x_pos_ = gMap.max_X_ - width_frame_ - 1;
+		}
+		if (y_pos_ > gMap.max_Y_) {
+			come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
+		}
 	}
 }
-
-
-
