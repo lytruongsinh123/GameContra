@@ -37,12 +37,47 @@ bool ThreatsObject::LoadImg(std::string path, SDL_Renderer* screen)
 
 void ThreatsObject::set_clips() // xây dựng clips cho threat object
 {
-	for (int i = 0; i <= 7; ++i)
+	if (width_frame_ > 0 && height_frame_ > 0)
 	{
-		frame_clip_[i].x = i * width_frame_;
-		frame_clip_[i].y = 0;
-		frame_clip_[i].w = width_frame_;
-		frame_clip_[i].h = height_frame_;
+		frame_clip_[0].x = 0;
+		frame_clip_[0].y = 0;
+		frame_clip_[0].w = width_frame_;
+		frame_clip_[0].h = height_frame_;
+
+		frame_clip_[1].x = width_frame_;
+		frame_clip_[1].y = 0;
+		frame_clip_[1].w = width_frame_;
+		frame_clip_[1].h = height_frame_;
+
+		frame_clip_[2].x = width_frame_ * 2;
+		frame_clip_[2].y = 0;
+		frame_clip_[2].w = width_frame_;
+		frame_clip_[2].h = height_frame_;
+
+		frame_clip_[3].x = width_frame_ * 3;
+		frame_clip_[3].y = 0;
+		frame_clip_[3].w = width_frame_;
+		frame_clip_[3].h = height_frame_;
+
+		frame_clip_[4].x = width_frame_ * 4;
+		frame_clip_[4].y = 0;
+		frame_clip_[4].w = width_frame_;
+		frame_clip_[4].h = height_frame_;
+
+		frame_clip_[5].x = width_frame_ * 5;
+		frame_clip_[5].y = 0;
+		frame_clip_[5].w = width_frame_;
+		frame_clip_[5].h = height_frame_;
+
+		frame_clip_[6].x = width_frame_ * 6;
+		frame_clip_[6].y = 0;
+		frame_clip_[6].w = width_frame_;
+		frame_clip_[6].h = height_frame_;
+
+		frame_clip_[7].x = width_frame_ * 7;
+		frame_clip_[7].y = 0;
+		frame_clip_[7].w = width_frame_;
+		frame_clip_[7].h = height_frame_;
 	}
 }
 
@@ -102,7 +137,7 @@ void ThreatsObject::InitThreats() // khởi tạo threat
 	y_val_ = 0;
 	if (x_pos_ > 256)
 	{
-		x_pos_ -= 256; // ko rơi xuống vực
+		x_pos_ -= 500; // ko rơi xuống vực
 		// cho khoảng di chuyển lùi lại
 		animation_a_ -= 256;
 		animation_b_ -= 256;
@@ -190,10 +225,6 @@ void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 					y_pos_ = (y1 + 1) * TILE_SIZE;
 					y_val_ = 0;
 				}
-				/*if (gMap.tile[y1][x1] != BLANK_TILE || gMap.tile[y1][x2] != BLANK_TILE) {
-					y_pos_ = (y1 + 1) * TILE_SIZE;
-					y_val_ = 0;
-				}*/
 			}
 		}
 
@@ -213,28 +244,29 @@ void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 void ThreatsObject::ImpMoveType(SDL_Renderer* screen) {
 	if (type_move_ == STATIC_THREAT) {
 		// do nothing
+		;
 	}
 	else {
 		if (on_ground_ == true) {
 			if (x_pos_ > animation_b_) {
 				input_type_.left_ = 1;
 				input_type_.right_ = 0;
-				LoadImg("img//threat_left.png", screen);
+				LoadImg("img//threat_left1.png", screen);
 			}
-			else {
+			else 
 				if (x_pos_ < animation_a_) {
 					input_type_.left_ = 0;
 					input_type_.right_ = 1;
-					LoadImg("img//threat_right.png", screen);
+					LoadImg("img//threat_right1.png", screen);
 				}
-			}
+			
 		}
 		else {
 			if (input_type_.left_ == 1) {
-				LoadImg("img//threat_left.png", screen);
+				LoadImg("img//threat_left1.png", screen);
 			}
 			else {
-				LoadImg("img//threat_right.png", screen);
+				LoadImg("img//threat_right1.png", screen);
 			}
 		}
 	}

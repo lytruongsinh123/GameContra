@@ -50,11 +50,12 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 
 
 	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 20; ++i) {
 		ThreatsObject* p_threat = dynamic_threats + i;
 		if (p_threat != NULL) {
-			p_threat->LoadImg("img//threat_left.png", g_screen); // Load hình ảnh threat
+			p_threat->LoadImg("img//threat_left1.png", g_screen); // Load hình ảnh threat
 			p_threat->set_clips(); // tạo hiệu ứng di chuyển
+			p_threat->InitThreats();
 			p_threat->set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT); // loại di chuyển của threat
 			p_threat->set_x_pos(500 + i * 500); // cách phân bố đều trên 25000 pixels: ông này dùng vòng lặp để cho hiện threat sau mỗi 1200 pixels, vị trí đầu ở điểm pixel thứ 700 (phân bố đều)
 			p_threat->set_y_pos(200); // phân bố ở ngay trên map'
@@ -63,7 +64,6 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 			p_threat->setAnimationPos(pos1, pos2); // giới hạn di chuyển của threat
 			p_threat->set_input_left(1); // di chuyển qua trái
 			list_threats.push_back(p_threat);
-			cout << "Load threat " << i << " success" << endl;
 		}
 	}
 	ThreatsObject* threats_objs = new ThreatsObject[20]; // có 20 threats trên bản đồ
@@ -80,9 +80,6 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 			p_threat->set_type_move(ThreatsObject::STATIC_THREAT); // loại di chuyển của threat
 			p_threat->set_input_left(0); // không di chuyển
 			list_threats.push_back(p_threat);
-		}
-		else {
-			cout << "img not found" << endl;
 		}
 	}
 	return list_threats;
