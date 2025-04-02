@@ -8,13 +8,18 @@
 #define THREAT_MAX_FALL_SPEED 10
 #define THREAT_GRAVITY_SPEED 0.8
 #define THREAT_FRAME_NUM 8
-
+#define THREAT_SPEED 3
 class ThreatsObject : public BaseObject // kế thừa từ object BaseObject
 {
 public:
     ThreatsObject();
     ~ThreatsObject();
-
+	enum TypeMove // loại di chuyển của threat
+	{
+		STATIC_THREAT = 0,
+		MOVE_IN_SPACE_THREAT = 1,
+		MOVE_ON_GROUND_THREAT = 2
+	};
     void set_x_val(const float& xVal) { x_val_ = xVal; } // float tăng độ chính xác
     void set_y_val(const float& yVal) { y_val_ = yVal; }
 
@@ -31,6 +36,11 @@ public:
     int get_height_frame() const { return height_frame_; }
     void DoPlayer(Map& gMap); // threats đứng yên hay di chuyển gì đó
     void CheckToMap(Map& gMap); // kéo threats theo khi mà bản đồ di chuyển
+	void InitThreats(); // khởi tạo threat
+	void set_type_move(const int& typemove) { type_move_ = typemove; }
+	void setAnimationPos(const int& pos_a, const int& pos_b) { animation_a_ = pos_a; animation_b_ = pos_b; }
+	void set_input_left(const int& ipleft) { input_type_.left_ = ipleft; } // khi đến giới hạn a gán kiểu di chuyển = 0
+	void ImpMoveType(SDL_Renderer* screen); // hàm xử lý di chuyển của threat
 private:
 
     int map_x_; // giới hạn với bản đồ
@@ -46,6 +56,12 @@ private:
     int width_frame_; // quản lý chiều dài frame
     int height_frame_; // quản lý chiều cao frame
 
+
+	int type_move_; // quản lý hình thức di chuyển của threat
+    // di chuyển trong phạm vi a b
+	int animation_a_; 
+	int animation_b_; 
+	Input input_type_; // quản lý hình thức di chuyển của threat
 };
 
 #endif

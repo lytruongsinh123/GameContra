@@ -46,6 +46,26 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 {
 	std::vector<ThreatsObject*> list_threats; // vector chứa các đối tượng trên bản đồ
 
+
+
+
+	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
+	for (int i = 0; i < 20; i++) {
+		ThreatsObject* p_threat = dynamic_threats + i;
+		if (p_threat != NULL) {
+			p_threat->LoadImg("img//threat_left.png", g_screen); // Load hình ảnh threat
+			p_threat->set_clips(); // tạo hiệu ứng di chuyển
+			p_threat->set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT); // loại di chuyển của threat
+			p_threat->set_x_pos(500 + i * 500); // cách phân bố đều trên 25000 pixels: ông này dùng vòng lặp để cho hiện threat sau mỗi 1200 pixels, vị trí đầu ở điểm pixel thứ 700 (phân bố đều)
+			p_threat->set_y_pos(200); // phân bố ở ngay trên map'
+			int pos1 = p_threat->get_x_pos() - 60;
+			int pos2 = p_threat->get_x_pos() + 60;
+			p_threat->setAnimationPos(pos1, pos2); // giới hạn di chuyển của threat
+			p_threat->set_input_left(1); // di chuyển qua trái
+			list_threats.push_back(p_threat);
+			cout << "Load threat " << i << " success" << endl;
+		}
+	}
 	ThreatsObject* threats_objs = new ThreatsObject[20]; // có 20 threats trên bản đồ
 
 	for (int i = 0; i < 20; ++i)
@@ -53,11 +73,16 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 		ThreatsObject* p_threat = threats_objs + i;
 		if (p_threat != NULL) // chừng nào pointer chưa chỉ đến cuối dãy thì load image từng threat lên
 		{
-			p_threat->LoadImg("img//threat_level.png", g_screen); // load hình ảnh threat
+			p_threat->LoadImg("img//threat.png", g_screen); // load hình ảnh threat
 			p_threat->set_clips();
 			p_threat->set_x_pos(700 + i * 1200); // cách phân bố đều trên 25000 pixels: ông này dùng vòng lặp để cho hiện threat sau mỗi 1200 pixels, vị trí đầu ở điểm pixel thứ 700 (phân bố đều)
 			p_threat->set_y_pos(250); // phân bố ở ngay trên map
+			p_threat->set_type_move(ThreatsObject::STATIC_THREAT); // loại di chuyển của threat
+			p_threat->set_input_left(0); // không di chuyển
 			list_threats.push_back(p_threat);
+		}
+		else {
+			cout << "img not found" << endl;
 		}
 	}
 	return list_threats;
@@ -132,6 +157,8 @@ int main(int argc, char* argv[]) {
 			if (p_threat != NULL)
 			{
 				p_threat->SetMapXY(map_data.start_X_, map_data.start_Y_); // đặt các threats vào các vị trí trên map theo tọa độ
+				p_threat->ImpMoveType(g_screen); // xử lý di chuyển của threat
+
 				p_threat->DoPlayer(map_data);
 				p_threat->Show(g_screen); // show ra
 			}

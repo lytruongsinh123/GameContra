@@ -12,7 +12,10 @@ ThreatsObject::ThreatsObject() // Hàm khởi tạo object ThreatsObject, ban đ
 	on_ground_ = 0;
 	come_back_time_ = 0;
 	frame_ = 0;
-
+	animation_a_ = 0;
+	animation_b_ = 0;
+	input_type_.left_ = 0;
+	type_move_ = STATIC_THREAT; // mặc định là đứng yên
 }
 
 ThreatsObject::~ThreatsObject() // hủy object
@@ -72,6 +75,14 @@ void ThreatsObject::DoPlayer(Map& gMap) // hàm thể hiện những gì threat 
 		{
 			y_val_ = THREAT_MAX_FALL_SPEED; //nếu vận tốc phương y đạt giá trị max thì không tăng nữa (chắc để ko bị corrupt frame)
 		}
+		if(input_type_.left_ == 1) {
+			x_val_ -= THREAT_SPEED; // di chuyển qua trái
+		}
+		else if (input_type_.right_ == 1)
+		{
+			x_val_ += THREAT_SPEED; // di chuyển qua phải
+		}
+
 
 		CheckToMap(gMap); // kéo threats theo bản đồ, tức là dịch chuyển threats á má
 	}
@@ -80,23 +91,30 @@ void ThreatsObject::DoPlayer(Map& gMap) // hàm thể hiện những gì threat 
 		come_back_time_--;
 		if (come_back_time_ == 0)
 		{
-			x_val_ = 0;
-			y_val_ = 0;
-			if (x_pos_ > 256)
-			{
-				x_pos_ -= 256; // ko rơi xuống vực
-			}
-			else
-			{
-				x_pos_ = 0;
-			}
-			y_pos_ = 0;
-			come_back_time_ = 0;
+			InitThreats(); // khởi tạo lại threat
 		}
 	}
 }
 
-
+void ThreatsObject::InitThreats() // khởi tạo threat
+{
+	x_val_ = 0;
+	y_val_ = 0;
+	if (x_pos_ > 256)
+	{
+		x_pos_ -= 256; // ko rơi xuống vực
+		// cho khoảng di chuyển lùi lại
+		animation_a_ -= 256;
+		animation_b_ -= 256;
+	}
+	else
+	{
+		x_pos_ = 0;
+	}
+	y_pos_ = 0;
+	come_back_time_ = 0;
+	input_type_.left_ = 1;
+}
 void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 {
 	int x1 = 0; // giới hạn kiểm tra từ A đến B theo chiều x 
@@ -189,6 +207,35 @@ void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 		}
 		if (y_pos_ > gMap.max_Y_) {
 			come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
+		}
+	}
+}
+void ThreatsObject::ImpMoveType(SDL_Renderer* screen) {
+	if (type_move_ == STATIC_THREAT) {
+		// do nothing
+	}
+	else {
+		if (on_ground_ == true) {
+			if (x_pos_ > animation_b_) {
+				input_type_.left_ = 1;
+				input_type_.right_ = 0;
+				LoadImg("img//threat_left.png", screen);
+			}
+			else {
+				if (x_pos_ < animation_a_) {
+					input_type_.left_ = 0;
+					input_type_.right_ = 1;
+					LoadImg("img//threat_right.png", screen);
+				}
+			}
+		}
+		else {
+			if (input_type_.left_ == 1) {
+				LoadImg("img//threat_left.png", screen);
+			}
+			else {
+				LoadImg("img//threat_right.png", screen);
+			}
 		}
 	}
 }
