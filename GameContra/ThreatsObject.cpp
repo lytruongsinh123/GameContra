@@ -137,7 +137,7 @@ void ThreatsObject::InitThreats() // khởi tạo threat
 	y_val_ = 0;
 	if (x_pos_ > 256)
 	{
-		x_pos_ -= 500; // ko rơi xuống vực
+		x_pos_ -= 256; // ko rơi xuống vực
 		// cho khoảng di chuyển lùi lại
 		animation_a_ -= 256;
 		animation_b_ -= 256;
@@ -248,13 +248,13 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen) {
 	}
 	else {
 		if (on_ground_ == true) {
-			if (x_pos_ > animation_b_) {
+			if (x_pos_ > animation_b_) { // quá phần giới hạn bên phải sẽ quay đầu lại
 				input_type_.left_ = 1;
 				input_type_.right_ = 0;
 				LoadImg("img//threat_left1.png", screen);
 			}
 			else 
-				if (x_pos_ < animation_a_) {
+				if (x_pos_ < animation_a_) { // quá phần giới hạn bên trái sẽ quay đầu lại
 					input_type_.left_ = 0;
 					input_type_.right_ = 1;
 					LoadImg("img//threat_right1.png", screen);
@@ -262,7 +262,7 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen) {
 			
 		}
 		else {
-			if (input_type_.left_ == 1) {
+			if (input_type_.left_ == 1) { // trên không trung 
 				LoadImg("img//threat_left1.png", screen);
 			}
 			else {

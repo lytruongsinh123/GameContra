@@ -17,7 +17,7 @@ public:
 	enum TypeMove // loại di chuyển của threat
 	{
 		STATIC_THREAT = 0,
-		MOVE_IN_SPACE_THREAT = 1,
+		MOVE_IN_SPACE_THREAT = 1, 
 		MOVE_ON_GROUND_THREAT = 2
 	};
     void set_x_val(const float& xVal) { x_val_ = xVal; } // float tăng độ chính xác
@@ -38,8 +38,8 @@ public:
     void CheckToMap(Map& gMap); // kéo threats theo khi mà bản đồ di chuyển
 	void InitThreats(); // khởi tạo threat
 	void set_type_move(const int& typemove) { type_move_ = typemove; }
-	void setAnimationPos(const int& pos_a, const int& pos_b) { animation_a_ = pos_a; animation_b_ = pos_b; }
-	void set_input_left(const int& ipleft) { input_type_.left_ = ipleft; } // khi đến giới hạn a gán kiểu di chuyển = 0
+	void setAnimationPos(const int& pos_a, const int& pos_b) { animation_a_ = pos_a; animation_b_ = pos_b; } // vị trí di chuyển
+    void set_input_left(const int& ipleft) { input_type_.left_ = ipleft; }; // khi đến giới hạn a gán kiểu di chuyển = 0
 	void ImpMoveType(SDL_Renderer* screen); // hàm xử lý di chuyển của threat
 private:
 
