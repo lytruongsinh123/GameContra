@@ -172,7 +172,7 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			// Tạo viên đạn mới
 			BulletObject* p_bullet = new BulletObject();
 			p_bullet->set_bullet_type(BulletObject::SPHERE_BULLET); // Set kiểu của đạn
-			p_bullet->LoadImgBullet(screen);
+			bool ret = p_bullet->LoadImgBullet(screen);
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 			bool is_up_pressed = currentKeyStates[SDL_SCANCODE_UP];
 			bool is_down_pressed = currentKeyStates[SDL_SCANCODE_DOWN];

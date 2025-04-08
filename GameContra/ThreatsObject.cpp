@@ -271,3 +271,42 @@ void ThreatsObject::ImpMoveType(SDL_Renderer* screen) {
 		}
 	}
 }
+
+void ThreatsObject::InitBullet(BulletObject* p_bullet, SDL_Renderer* screen) {
+	if (p_bullet != NULL) {
+		p_bullet->set_bullet_type(BulletObject::LASER_BULLET); // loại đạn
+		bool ret = p_bullet->LoadImgBullet(screen); // load hình ảnh viên đạn
+
+		if (ret) {
+			p_bullet->set_is_move(true);
+			p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // hướng bắn
+			p_bullet->SetRect(rect_.x + 20, rect_.y + 10); // tọa độ bắn viên đạn
+			p_bullet->set_x_val(10); // tốc độ bắn
+			bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách
+		}
+	}
+}
+
+void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit) { // kiểm tra đạn
+	for (int i = 0; i < bullet_list_.size(); i++) { 
+		BulletObject* p_bullet = bullet_list_.at(i);
+		if (p_bullet != NULL) {
+			if (p_bullet->get_is_move()) { // kiểm tra xem viên đạn có di chuyển không
+				int bullet_distance = rect_.x + width_frame_ - p_bullet->GetRect().x; // khoảng cách giữa viên đạn và nhân vật
+				if (bullet_distance < 300 && bullet_distance > 0) { // nếu khoảng cách 300 pixels thì sẽ bắn
+					p_bullet->HandleMove(x_limit, y_limit);
+					p_bullet->Render(screen);
+				}
+				else {
+					p_bullet->set_is_move(false); 
+				}
+				p_bullet->HandleMove(x_limit, y_limit); 
+				p_bullet->Render(screen);
+			}
+			else { // nếu đạn bắn ra khỏi giới hạn thì sẽ reset lại vị trí đầu tiên nên chỉ cần 1 viên đạn
+				p_bullet->set_is_move(true);
+				p_bullet->SetRect(rect_.x + 20, rect_.y + 10); // dùng rec_.x và rec_.y để lấy tọa độ của viên đạn là vị trí của threat
+			}
+		}
+	}
+}

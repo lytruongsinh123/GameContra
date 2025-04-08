@@ -4,7 +4,7 @@
 
 #include "BaseFunction.h"
 #include "BaseObject.h"
-
+#include "BulletObject.h"
 #define THREAT_MAX_FALL_SPEED 10
 #define THREAT_GRAVITY_SPEED 0.8
 #define THREAT_FRAME_NUM 8
@@ -41,6 +41,13 @@ public:
 	void setAnimationPos(const int& pos_a, const int& pos_b) { animation_a_ = pos_a; animation_b_ = pos_b; } // vị trí di chuyển
     void set_input_left(const int& ipleft) { input_type_.left_ = ipleft; }; // khi đến giới hạn a gán kiểu di chuyển = 0
 	void ImpMoveType(SDL_Renderer* screen); // hàm xử lý di chuyển của threat
+
+	std::vector<BulletObject*> get_bullet_list() const { return bullet_list_; } // hàm quản lý lấy ra danh sách bullet
+    void set_bullet_list(const std::vector<BulletObject*>& bl_list) { bullet_list_ = bl_list; } // xử lý va chạm với đạn bắn ra
+
+    void InitBullet(BulletObject* p_bullet, SDL_Renderer* screen); // xử lý thông số của đạn
+    void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit);
+
 private:
 
     int map_x_; // giới hạn với bản đồ
@@ -62,6 +69,8 @@ private:
 	int animation_a_; 
 	int animation_b_; 
 	Input input_type_; // quản lý hình thức di chuyển của threat
+
+    std::vector<BulletObject*> bullet_list_;
 };
 
 #endif

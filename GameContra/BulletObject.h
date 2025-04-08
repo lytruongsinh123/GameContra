@@ -38,7 +38,7 @@ public:
 	unsigned int get_bullet_type() const { return bullet_type_; }
 
 	void HandleMove(const int& x_border, const int& y_border); // xử lý di chuyển viên đạn
-	void LoadImgBullet(SDL_Renderer* des);
+	bool LoadImgBullet(SDL_Renderer* des);
 private:
 	int x_val_; // lượng di chuyển viên đạn theo chiều x
 	int y_val_; // lượng di chuyển viên đạn theo chiều y

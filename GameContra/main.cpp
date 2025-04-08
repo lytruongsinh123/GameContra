@@ -51,7 +51,7 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 
 	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
 	for (int i = 0; i < 20; ++i) {
-		if(i != 3) {
+		if (i != 3) {
 			ThreatsObject* p_threat = dynamic_threats + i;
 			if (p_threat != NULL) {
 				p_threat->LoadImg("img//threat_left1.png", g_screen); // Load hình ảnh threat
@@ -81,6 +81,11 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 			p_threat->set_y_pos(250); // phân bố ở ngay trên map
 			p_threat->set_type_move(ThreatsObject::STATIC_THREAT); // loại di chuyển của threat
 			p_threat->set_input_left(0); // không di chuyển
+
+			BulletObject* p_bullet = new BulletObject(); // tạo viên đạn
+			p_threat->InitBullet(p_bullet, g_screen); // khởi tạo đạn lên screen
+			list_threats.push_back(p_threat); // thêm vào danh sách
+
 			list_threats.push_back(p_threat);
 		}
 	}
@@ -159,6 +164,7 @@ int main(int argc, char* argv[]) {
 				p_threat->ImpMoveType(g_screen); // xử lý di chuyển của threat
 
 				p_threat->DoPlayer(map_data);
+				p_threat->MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 				p_threat->Show(g_screen); // show ra
 			}
 
@@ -172,6 +178,19 @@ int main(int argc, char* argv[]) {
 			if (delay_time >= 0) SDL_Delay(delay_time);
 		}// Nếu thời gian thực tế nhỏ hơn thời gian 1 frame 
 	}
+
+	// giải phóng bộ nhớ
+	for (int i = 0; i < threats_list.size(); i++)
+	{
+		ThreatsObject* p_threat = threats_list.at(i);
+		if (p_threat != NULL)
+		{
+			p_threat->Free();
+			p_threat = NULL;
+		}
+	}
+
+	threats_list.clear();
 
 	close();
 	return 0;
