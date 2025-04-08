@@ -45,10 +45,6 @@ bool LoadBackground() { // Load background
 std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên bản đồ
 {
 	std::vector<ThreatsObject*> list_threats; // vector chứa các đối tượng trên bản đồ
-
-
-
-
 	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
 	for (int i = 0; i < 20; ++i) {
 	
