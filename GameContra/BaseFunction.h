@@ -52,5 +52,9 @@ typedef struct {
 	const char* file_name_;
 
 } Map;
+
+namespace SDLCommonFunc {
+	bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2); // kiểm tra va chạm
+}
 #endif // !BASE_FUNCTION_H_
 

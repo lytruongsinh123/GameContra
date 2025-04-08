@@ -51,21 +51,21 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 
 	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
 	for (int i = 0; i < 20; ++i) {
-		if (i != 3) {
+	
 			ThreatsObject* p_threat = dynamic_threats + i;
 			if (p_threat != NULL) {
 				p_threat->LoadImg("img//threat_left1.png", g_screen); // Load hình ảnh threat
+
 				p_threat->set_clips(); // tạo hiệu ứng di chuyển
 				p_threat->InitThreats();
 				p_threat->set_type_move(ThreatsObject::MOVE_IN_SPACE_THREAT); // loại di chuyển của threat
 				p_threat->set_x_pos(500 + i * 500); // cách phân bố đều trên 25000 pixels: ông này dùng vòng lặp để cho hiện threat sau mỗi 1200 pixels, vị trí đầu ở điểm pixel thứ 700 (phân bố đều)
-				p_threat->set_y_pos(200); // phân bố ở ngay trên map'
+				p_threat->set_y_pos(0); // phân bố ở ngay trên map'
 				int pos1 = p_threat->get_x_pos() - 60;
 				int pos2 = p_threat->get_x_pos() + 60;
 				p_threat->setAnimationPos(pos1, pos2); // giới hạn di chuyển của threat
 				p_threat->set_input_left(1); // di chuyển qua trái
 				list_threats.push_back(p_threat);
-				}
 			}
 		}
 	ThreatsObject* threats_objs = new ThreatsObject[20]; // có 20 threats trên bản đồ
@@ -85,8 +85,6 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 			BulletObject* p_bullet = new BulletObject(); // tạo viên đạn
 			p_threat->InitBullet(p_bullet, g_screen); // khởi tạo đạn lên screen
 			list_threats.push_back(p_threat); // thêm vào danh sách
-
-			list_threats.push_back(p_threat);
 		}
 	}
 	return list_threats;
@@ -169,6 +167,91 @@ int main(int argc, char* argv[]) {
 			}
 
 		}
+
+
+		// Lấy danh sách các viên đạn của nhân vật game
+		//std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
+		//for (int bl = 0; bl < bullet_list.size(); bl++) {
+		//	BulletObject* p_bullet = bullet_list.at(bl);
+		//	if (p_bullet != NULL) {
+		//		for (int t = 0; t < threats_list.size(); t++) {
+		//			ThreatsObject* obj_threat = threats_list.at(t);
+		//			if (obj_threat != NULL) {
+		//				SDL_Rect tRect;
+		//				tRect.x = obj_threat->GetRect().x;
+		//				tRect.y = obj_threat->GetRect().y;
+		//				tRect.w = obj_threat->get_width_frame();
+		//				tRect.h = obj_threat->get_height_frame();
+
+		//				SDL_Rect bRect = p_bullet->GetRect();
+
+		//				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+		//				if (bCol) {
+		//					p_player.RemoveBullet(bl); // xóa viên đạn
+		//					obj_threat->Free(); // xóa threat
+		//					threats_list.erase(threats_list.begin() + t); // xóa threat khỏi danh sách
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
+		for (auto it_bullet = bullet_list.begin(); it_bullet != bullet_list.end(); ) {
+			BulletObject* p_bullet = *it_bullet;
+			if (p_bullet != NULL) {
+				bool bullet_erased = false;
+				for (auto it_threat = threats_list.begin(); it_threat != threats_list.end(); ) {
+					ThreatsObject* obj_threat = *it_threat;
+					if (obj_threat != NULL) {
+						SDL_Rect tRect;
+						tRect.x = obj_threat->GetRect().x;
+						tRect.y = obj_threat->GetRect().y;
+						tRect.w = obj_threat->get_width_frame();
+						tRect.h = obj_threat->get_height_frame();
+
+						SDL_Rect bRect = p_bullet->GetRect();
+
+						bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+						if (bCol) {
+							p_player.RemoveBullet(std::distance(bullet_list.begin(), it_bullet)); // xóa viên đạn
+							it_bullet = bullet_list.erase(it_bullet); // xóa viên đạn khỏi danh sách
+
+							// Xóa tất cả các viên đạn của quái
+							std::vector<BulletObject*> threat_bullets = obj_threat->get_bullet_list();
+							for (auto it_threat_bullet = threat_bullets.begin(); it_threat_bullet != threat_bullets.end(); ++it_threat_bullet) {
+								BulletObject* p_threat_bullet = *it_threat_bullet;
+								if (p_threat_bullet != NULL) {
+									delete p_threat_bullet;
+									p_threat_bullet = NULL;
+								}
+							}
+							obj_threat->set_bullet_list(std::vector<BulletObject*>()); // Làm rỗng danh sách đạn của quái
+
+							obj_threat->Free(); // xóa threat
+							it_threat = threats_list.erase(it_threat); // xóa threat khỏi danh sách
+							bullet_erased = true;
+							break; // thoát khỏi vòng lặp threat
+						}
+						else {
+							++it_threat;
+						}
+					}
+					else {
+						++it_threat;
+					}
+				}
+				if (!bullet_erased) {
+					++it_bullet;
+				}
+			}
+			else {
+				++it_bullet;
+			}
+		}
+
+
+
+
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 
 		int real_imp_time = fps_timer.get_ticks(); // lấy thời gian thực sự trôi qua

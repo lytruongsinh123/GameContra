@@ -234,7 +234,18 @@ void MainObject::HandleBullet(SDL_Renderer* des) {
 		}
 	}
 }
+void MainObject::RemoveBullet(const int& idx) {
+	int size = p_bullet_list_.size(); // kiểm tra trong băng đạn có đạn ko 
+	if (size > 0 && idx < size) { // nếu có đạn và vị trí viên đạn trong băng đạn
+		BulletObject* p_bullet = p_bullet_list_.at(idx); // lấy ra viên đạn đó
+		p_bullet_list_.erase(p_bullet_list_.begin() + idx); // xóa viên đạn khỏi danh sách
 
+		if (p_bullet) {
+			delete p_bullet; // xóa viên đạn
+			p_bullet = NULL;
+		}
+	}
+}// xóa đạn 
 void MainObject::DoPlayer(Map& map_data) {
 	
 	if (come_back_time_ == 0) {  // nếu thời gian comeback = 0 thì nhân vật di chuyển bình thường
