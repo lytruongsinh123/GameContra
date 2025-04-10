@@ -134,6 +134,7 @@
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
+    <ClCompile Include="ExplosionObject.cpp" />
     <ClCompile Include="Game_map.cpp" />
     <ClCompile Include="ImpTimer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="BulletObject.h" />
     <ClInclude Include="CharacterObject.h" />
+    <ClInclude Include="ExplosionObject.h" />
     <ClInclude Include="Game_map.h" />
     <ClInclude Include="ImpTimer.h" />
     <ClInclude Include="ThreatsObject.h" />

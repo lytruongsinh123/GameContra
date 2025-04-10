@@ -6,6 +6,7 @@
 #include "CharacterObject.h"
 #include "ImpTimer.h"
 #include "ThreatsObject.h"
+#include "ExplosionObject.h"
 BaseObject g_background;
 bool InitData() { // Khoi tao SDL
 	bool success = true;
@@ -122,6 +123,12 @@ int main(int argc, char* argv[]) {
 
 	std::vector<ThreatsObject*> threats_list = MakeThreadList(); // tạo 1 threats list
 
+	ExplosionObject exp_threat;
+	bool tRet = exp_threat.LoadImg("img//exp3.png", g_screen); // load hình ảnh explosion
+	if (!tRet) return -1;
+	exp_threat.set_clip(); // set clip cho explosion
+
+
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		fps_timer.start(); // lưu thời gian khi bắt đầu game
@@ -161,34 +168,8 @@ int main(int argc, char* argv[]) {
 				p_threat->MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 				p_threat->Show(g_screen); // show ra
 
-				// Lấy danh sách các viên đạn của nhân vật game
-				//std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
-				//for (int bl = 0; bl < bullet_list.size(); bl++) {
-				//	BulletObject* p_bullet = bullet_list.at(bl);
-				//	if (p_bullet != NULL) {
-				//		for (int t = 0; t < threats_list.size(); t++) {
-				//			ThreatsObject* obj_threat = threats_list.at(t);
-				//			if (obj_threat != NULL) {
-				//				SDL_Rect tRect;
-				//				tRect.x = obj_threat->GetRect().x;
-				//				tRect.y = obj_threat->GetRect().y;
-				//				tRect.w = obj_threat->get_width_frame();
-				//				tRect.h = obj_threat->get_height_frame();
 
-				//				SDL_Rect bRect = p_bullet->GetRect();
-
-				//				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
-				//				if (bCol) {
-				//					p_player.RemoveBullet(bl); // xóa viên đạn
-				//					obj_threat->Free(); // xóa threat
-				//					threats_list.erase(threats_list.begin() + t); // xóa threat khỏi danh sách
-				//				}
-				//			}
-				//		}
-				//	}
-				//}
-
-
+				/*
 				SDL_Rect rect_player = p_player.GetRectFrame(); 
 				bool bCol1 = false;
 				// kiểm tra va chạm giữa viên đạn và nhân vật
@@ -217,12 +198,41 @@ int main(int argc, char* argv[]) {
 						return 0;
 					}
 				}
-
+				*/
 			}
 
 		}
+		
+		int frame_exp_width = exp_threat.get_frame_width();
+		int frame_exp_height = exp_threat.get_frame_height();
 
-	
+		// Lấy danh sách các viên đạn của nhân vật game
+					//std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
+					//for (int bl = 0; bl < bullet_list.size(); bl++) {
+					//	BulletObject* p_bullet = bullet_list.at(bl);
+					//	if (p_bullet != NULL) {
+					//		for (int t = 0; t < threats_list.size(); t++) {
+					//			ThreatsObject* obj_threat = threats_list.at(t);
+					//			if (obj_threat != NULL) {
+					//				SDL_Rect tRect;
+					//				tRect.x = obj_threat->GetRect().x;
+					//				tRect.y = obj_threat->GetRect().y;
+					//				tRect.w = obj_threat->get_width_frame();
+					//				tRect.h = obj_threat->get_height_frame();
+
+					//				SDL_Rect bRect = p_bullet->GetRect();
+
+					//				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+					//				if (bCol) {
+					//					p_player.RemoveBullet(bl); // xóa viên đạn
+					//					obj_threat->Free(); // xóa threat
+					//					threats_list.erase(threats_list.begin() + t); // xóa threat khỏi danh sách
+					//				}
+					//			}
+					//		}
+					//	}
+					//}
+
 		std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
 		for (auto it_bullet = bullet_list.begin(); it_bullet != bullet_list.end(); ) {
 			BulletObject* p_bullet = *it_bullet;
@@ -241,6 +251,16 @@ int main(int argc, char* argv[]) {
 
 						bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 						if (bCol) {
+							for (int ex = 0; ex < NUM_FRAME_EXP; ex++) {
+								int x_pos = p_bullet->GetRect().x - frame_exp_width * 0.5;
+								int y_pos = p_bullet->GetRect().y - frame_exp_height * 0.5;
+								// lấy tâm vị trí nổ là vị trí của viên đạn
+
+								exp_threat.set_frame(ex);
+								exp_threat.SetRect(x_pos, y_pos);
+								exp_threat.Show(g_screen);
+							} 
+
 							p_player.RemoveBullet(std::distance(bullet_list.begin(), it_bullet)); // xóa viên đạn
 							it_bullet = bullet_list.erase(it_bullet); // xóa viên đạn khỏi danh sách
 
