@@ -160,37 +160,69 @@ int main(int argc, char* argv[]) {
 				p_threat->DoPlayer(map_data);
 				p_threat->MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 				p_threat->Show(g_screen); // show ra
+
+				// Lấy danh sách các viên đạn của nhân vật game
+				//std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
+				//for (int bl = 0; bl < bullet_list.size(); bl++) {
+				//	BulletObject* p_bullet = bullet_list.at(bl);
+				//	if (p_bullet != NULL) {
+				//		for (int t = 0; t < threats_list.size(); t++) {
+				//			ThreatsObject* obj_threat = threats_list.at(t);
+				//			if (obj_threat != NULL) {
+				//				SDL_Rect tRect;
+				//				tRect.x = obj_threat->GetRect().x;
+				//				tRect.y = obj_threat->GetRect().y;
+				//				tRect.w = obj_threat->get_width_frame();
+				//				tRect.h = obj_threat->get_height_frame();
+
+				//				SDL_Rect bRect = p_bullet->GetRect();
+
+				//				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+				//				if (bCol) {
+				//					p_player.RemoveBullet(bl); // xóa viên đạn
+				//					obj_threat->Free(); // xóa threat
+				//					threats_list.erase(threats_list.begin() + t); // xóa threat khỏi danh sách
+				//				}
+				//			}
+				//		}
+				//	}
+				//}
+
+
+				SDL_Rect rect_player = p_player.GetRectFrame(); 
+				bool bCol1 = false;
+				// kiểm tra va chạm giữa viên đạn và nhân vật
+				std::vector<BulletObject*> tBullet_list = p_threat->get_bullet_list(); // lấy danh sách đạn của threat
+				for (int jj = 0; jj < tBullet_list.size(); jj++) {
+					BulletObject* pt_bullet = tBullet_list.at(jj); // lấy ra viên đạn
+					if (pt_bullet) {
+						bCol1 = SDLCommonFunc::CheckCollision(pt_bullet->GetRect(), rect_player); // kiểm tra va chạm giữa viên đạn và nhân vật
+						if(bCol1) {
+							p_threat->RemoveBullet(jj); // xóa viên đạn
+							break; // khi xảy ra va chạm rồi sẽ thoát khỏi vòng lặp ko kiểm tra với các viên đạn còn lại
+						}
+					}
+				}
+
+				// kiểm tra va chạm giữa nhân vật và threat
+				SDL_Rect rect_threat = p_threat->GetRectFrame(); // lấy vị trí của threat
+				bool bCol2 = SDLCommonFunc::CheckCollision(rect_player, rect_threat); // kiểm tra va chạm giữa nhân vật và threat
+				
+				// khi chết hiện thông báo game over
+				if (bCol1 || bCol2) {
+					if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) { 
+						p_threat->Free(); 
+						close();
+						SDL_Quit();
+						return 0;
+					}
+				}
+
 			}
 
 		}
 
-
-		// Lấy danh sách các viên đạn của nhân vật game
-		//std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
-		//for (int bl = 0; bl < bullet_list.size(); bl++) {
-		//	BulletObject* p_bullet = bullet_list.at(bl);
-		//	if (p_bullet != NULL) {
-		//		for (int t = 0; t < threats_list.size(); t++) {
-		//			ThreatsObject* obj_threat = threats_list.at(t);
-		//			if (obj_threat != NULL) {
-		//				SDL_Rect tRect;
-		//				tRect.x = obj_threat->GetRect().x;
-		//				tRect.y = obj_threat->GetRect().y;
-		//				tRect.w = obj_threat->get_width_frame();
-		//				tRect.h = obj_threat->get_height_frame();
-
-		//				SDL_Rect bRect = p_bullet->GetRect();
-
-		//				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
-		//				if (bCol) {
-		//					p_player.RemoveBullet(bl); // xóa viên đạn
-		//					obj_threat->Free(); // xóa threat
-		//					threats_list.erase(threats_list.begin() + t); // xóa threat khỏi danh sách
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
+	
 		std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
 		for (auto it_bullet = bullet_list.begin(); it_bullet != bullet_list.end(); ) {
 			BulletObject* p_bullet = *it_bullet;

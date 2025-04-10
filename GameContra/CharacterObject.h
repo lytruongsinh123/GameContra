@@ -27,6 +27,7 @@ public:
 	void SetMapXY(const int map_x, const int map_y) { map_x_ = map_x; map_y_ = map_y; }
 	void CenterEntityOnMap(Map& map_data);
 	void UpdateImagePlayer(SDL_Renderer* des);
+	SDL_Rect GetRectFrame(); // lấy vị trí của nhân vật
 	void set_bullet_list(std::vector<BulletObject*> bullet_list) { p_bullet_list_ = bullet_list; }
 	std::vector<BulletObject*> get_bullet_list() const { return p_bullet_list_; } // lấy danh sách đạn
 	void HandleBullet(SDL_Renderer* des);

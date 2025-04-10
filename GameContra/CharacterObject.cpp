@@ -33,6 +33,17 @@ bool MainObject::LoadImg(std::string path, SDL_Renderer* screen) {
 
 	return ret;
 }
+
+SDL_Rect MainObject::GetRectFrame() {
+	SDL_Rect rect;
+	rect.x = rect_.x;
+	rect.y = rect_.y;
+	rect.w = width_frame_;
+	rect.h = height_frame_;
+
+	return rect;
+}
+
 void MainObject::set_clips() {  // trạng thái từng frame của nhân vật
 	if (width_frame_ > 0 && height_frame_ > 0) {
 		frame_clip_[0].x = 0;  // lấy frame đầu tiên của nhân vật ở vị trí x = 0
