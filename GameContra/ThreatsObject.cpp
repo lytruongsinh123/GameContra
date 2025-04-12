@@ -3,6 +3,8 @@
 
 ThreatsObject::ThreatsObject() // Hàm khởi tạo object ThreatsObject, ban đầu các hệ số = 0
 {
+	rect_.x = SCREEN_WIDTH;
+	rect_.y = 0;
 	width_frame_ = 0;
 	height_frame_ = 0;
 	x_val_ = 0.0;
@@ -106,6 +108,10 @@ void ThreatsObject::Show(SDL_Renderer* des)
 
         SDL_Rect* currentClip = &frame_clip_[frame_];
 		SDL_Rect rendQuad = { rect_.x, rect_.y, width_frame_, height_frame_ };
+		if (currentClip != NULL) {
+			rendQuad.w = currentClip->w;
+			rendQuad.h = currentClip->h;
+		}
 		SDL_RenderCopy(des, p_object_, currentClip, &rendQuad);
 	}
 }
@@ -225,7 +231,7 @@ void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
     }
 
 		//Check theo chiều dọc
-	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
+	int width_min = width_frame_/* < TILE_SIZE ? width_frame_ : TILE_SIZE*/;
 	x1 = (x_pos_) / TILE_SIZE;
 	x2 = (x_pos_ + width_min) / TILE_SIZE;
 
@@ -309,7 +315,7 @@ void ThreatsObject::InitBullet(BulletObject* p_bullet, SDL_Renderer* screen) {
 		if (ret) {
 			p_bullet->set_is_move(true);
 			p_bullet->set_bullet_dir(BulletObject::DIR_LEFT); // hướng bắn
-			p_bullet->SetRect(rect_.x + 20, rect_.y + 10); // tọa độ bắn viên đạn
+			p_bullet->SetRect(rect_.x + 15, rect_.y + 10); // tọa độ bắn viên đạn
 			p_bullet->set_x_val(10); // tốc độ bắn
 			bullet_list_.push_back(p_bullet); // thêm viên đạn vào danh sách
 		}
@@ -334,7 +340,7 @@ void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const i
 			}
 			else { // nếu đạn bắn ra khỏi giới hạn thì sẽ reset lại vị trí đầu tiên nên chỉ cần 1 viên đạn
 				p_bullet->set_is_move(true);
-				p_bullet->SetRect(rect_.x + 20, rect_.y + 10); // dùng rec_.x và rec_.y để lấy tọa độ của viên đạn là vị trí của threat
+				p_bullet->SetRect(rect_.x + 15, rect_.y + 10); // dùng rec_.x và rec_.y để lấy tọa độ của viên đạn là vị trí của threat
 			}
 		}
 	}

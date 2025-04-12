@@ -1,5 +1,8 @@
-﻿#include "BaseFunction.h"
+﻿
 #include "stdafx.h"
+#include "BaseFunction.h"
+
+
 bool SDLCommonFunc::CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2)
 {
     int left_a = object1.x;
@@ -86,4 +89,3 @@ bool SDLCommonFunc::CheckCollision(const SDL_Rect& object1, const SDL_Rect& obje
 
     return false;
 }
-
