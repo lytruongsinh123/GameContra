@@ -19,6 +19,8 @@ public:
 		WALK_LEFT = 2,
 		WALK_NONE = 0
 	};
+	int get_frame_width() const { return width_frame_; }
+	int get_frame_height() const { return height_frame_; }
 	bool LoadImg(std::string path, SDL_Renderer* screen);
 	void Show(SDL_Renderer* des);
 	void HandleInputAction(SDL_Event events, SDL_Renderer* screen);
@@ -35,6 +37,8 @@ public:
 	void HandleBullet(SDL_Renderer* des);
 	void RemoveBullet(const int& idx); // xóa đạn
 	void IncreaseMoney(); // tăng tiền
+	void set_comeback_time(const int& time) { come_back_time_ = time; } // thời gian quay lại
+	int GetMoneyCount() const { return money_count_; } // lấy số tiền
 private:
 	int money_count_; // số tiền ăn được
 	std::vector<BulletObject*> p_bullet_list_; // lưu danh sách đạn

@@ -7,7 +7,11 @@
 #include "ImpTimer.h"
 #include "ThreatsObject.h"
 #include "ExplosionObject.h"
+#include "TextObject.h"
+#include "PlayPower.h"
+#include "Geometric.h"
 BaseObject g_background;
+TTF_Font* font_time = NULL; // đối tượng font chữ hiện thời gian
 bool InitData() { // Khoi tao SDL
 	bool success = true;
 	int ret = SDL_Init(SDL_INIT_VIDEO);
@@ -30,6 +34,14 @@ bool InitData() { // Khoi tao SDL
 			int imgFlags = IMG_INIT_PNG;
 			if (!(IMG_Init(imgFlags) && imgFlags))
 				success = false;
+		}
+
+		if (TTF_Init() == -1) { // Khoi tao font LỖI
+			success = false;
+		}
+		font_time = TTF_OpenFont("font//dlxfont.ttf", 15); // mở font chữ
+		if (font_time == NULL) {
+			success = false;
 		}
 	}
 	return success;
@@ -121,14 +133,37 @@ int main(int argc, char* argv[]) {
 	p_player.set_clips();
 
 
+
+	PlayerPower player_power; // tạo đối tượng số mạng
+	player_power.Init(g_screen); // khởi tạo số mạng
+	PlayerMoney player_money; // tạo đối tượng đồng tiền
+	player_money.Init(g_screen); // khởi tạo đồng tiền
+	player_money.SetPos(SCREEN_WIDTH * 0.5 - 290, 8);
+
+
+
 	std::vector<ThreatsObject*> threats_list = MakeThreadList(); // tạo 1 threats list
 
 	ExplosionObject exp_threat;
+	ExplosionObject exp_main;
+
 	bool tRet = exp_threat.LoadImg("img//exp3.png", g_screen); // load hình ảnh explosion
 	if (!tRet) return -1;
 	exp_threat.set_clip(); // set clip cho explosion
+	tRet = exp_main.LoadImg("img//exp3.png", g_screen);
+	exp_main.set_clip();
+	if (!tRet) return 0;
 
-
+	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
+	int num_die = 0; // mạng
+	TextObject time_game;
+	TextObject score_game;
+	TextObject money_count;
+	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
+	time_game.SetColor(TextObject::WHITE_TEXT); // set màu trắng cho chữ
+	score_game.SetColor(TextObject::WHITE_TEXT); // set màu trắng cho chữ
+	UINT score_val = 0;
+	money_count.SetColor(TextObject::WHITE_TEXT); // set màu trắng cho chữ
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		fps_timer.start(); // lưu thời gian khi bắt đầu game
@@ -155,6 +190,21 @@ int main(int argc, char* argv[]) {
 
 		game_map_.SetMap(map_data); // cập nhật vị trí mới cho start_X_ và start_Y_
 		game_map_.DrawMap(g_screen); // vẽ lại map
+
+
+		// Draw Geometric
+		GeometricFormat rectangle_size(0, 0, SCREEN_WIDTH, 42);
+		ColorData color_data(36, 36, 36);
+		Geometric::RenderRectangle(rectangle_size, color_data, g_screen);
+		GeometricFormat outline_size(1, 1, SCREEN_WIDTH - 1, 41);
+		ColorData color_data2(255, 250, 250);
+		Geometric::RenderOutline(outline_size, color_data2, g_screen);
+
+
+		player_power.Show(g_screen); // hiện số mạng
+		player_money.Show(g_screen); // hiện đồng tiền
+
+
 
 		for (int i = 0; i < threats_list.size(); i++)
 		{
@@ -196,18 +246,40 @@ int main(int argc, char* argv[]) {
 				}
 
 				if (bCol1 || bCol2) {
-					if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) { 
-						p_threat->Free(); 
-						close();
-						SDL_Quit();
-						return 0;
+					int width_exp_frame = exp_main.get_frame_width(); // lấy frame của explosion
+					int height_exp_frame = exp_main.get_frame_height(); // lấy chiều cao của frame explosion
+					for (int ex = 0; ex < 4; ex++) {
+						int x_pos = (p_player.GetRect().x + p_player.get_frame_width() * 0.5) - width_exp_frame * 0.5; // lấy vị trí để đặt tấm ảnh vụ nổ
+						int y_pos = (p_player.GetRect().y + p_player.get_frame_height() * 0.5) - height_exp_frame * 0.5; // lấy vị trí để đặt tấm ảnh vụ nổ
+						exp_main.set_frame(ex);
+						exp_main.SetRect(x_pos, y_pos); // lấy tâm vị trí nổ là vị trí của nhân vật
+						exp_main.Show(g_screen); // hiện ảnh vụ nổ
+						SDL_RenderPresent(g_screen); // cập nhật renderer
+					}
+					num_die++;
+					if (num_die <= 3) // mạng là 3
+					{// hồi sinh
+						p_player.SetRect(100, 0);
+						p_player.set_comeback_time(60); // thời gian hồi sinh
+						SDL_Delay(1000); // tạm dừng 1 giây
+						player_power.DeCrease(); // giảm số mạng
+						player_power.Render(g_screen); // hiện số mạng
+						continue;
+					}
+					else {
+						if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) {
+							p_threat->Free();
+							close();
+							SDL_Quit();
+							return 0;
+						}
 					}
 				}
 			}
 		}
 		
-		int frame_exp_width = exp_threat.get_frame_width();
-		int frame_exp_height = exp_threat.get_frame_height();
+		int frame_exp_width = exp_threat.get_frame_width(); // lấy frame của explosion
+		int frame_exp_height = exp_threat.get_frame_height(); 
 
 		// Lấy danh sách các viên đạn của nhân vật game
 		/*
@@ -257,10 +329,17 @@ int main(int argc, char* argv[]) {
 
 						bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 						if (bCol) {
-							for (int ex = 0; ex < NUM_FRAME_EXP; ex++) {
-								int x_pos = p_bullet->GetRect().x - frame_exp_width * 0.5;
+							score_val++; // tăng điểm số khi bắn trúng quái
+							for (int ex = 0; ex < NUM_FRAME_EXP; ex++) { // for chạy 8 khung hình của vụ nổ
+								int x_pos = p_bullet->GetRect().x - frame_exp_width * 0.5; // lấy vị trí để đặt tấm ảnh vụ nổ // chính là vị trí viên đạn
 								int y_pos = p_bullet->GetRect().y - frame_exp_height * 0.5;
-								// lấy tâm vị trí nổ là vị trí của viên đạn
+								// lấy tâm vị trí nổ là vị trí của viên đạn tại vị trí viên đạn chạm quái, ảnh vụ nổ luôn nằm ở bên dưới 
+								// ví dụ
+								//  * (đây là viên đạn)
+								//  ----------- //
+								//  |         | //
+								//  |         | //
+								//  ----------- // đây là bức ảnh ở bên dưới vụ nổ
 
 								exp_threat.set_frame(ex);
 								exp_threat.SetRect(x_pos, y_pos);
@@ -302,6 +381,47 @@ int main(int argc, char* argv[]) {
 				++it_bullet;
 			}
 		}
+
+
+
+
+		// Show game time
+		std::string str_time = "Time: ";
+		Uint32 time_val = SDL_GetTicks() / 1000; // lấy thời gian thực tế
+		Uint32 time_game_val =  300 - time_val; // lấy thời gian đếm ngược từ 300 trở lại
+		if (time_game_val <= 0) { // hết giờ chưa về đích
+			if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) {
+				is_quit = true;
+				break;
+			}
+		}
+		else {
+			std::string str_val = std::to_string(time_game_val); // chuyển đổi số thành string
+			str_time += str_val; // nối chuỗi Time: và thời gian
+
+			time_game.SetText(str_time); // set nội dung cho chữ
+			time_game.LoadFromRenderText(font_time, g_screen);
+			time_game.RenderText(g_screen, SCREEN_WIDTH - 200, 15);
+		}
+		// Show score
+		std::string str_score = "Score: ";
+		std::string str_val = std::to_string(score_val); // chuyển đổi số thành string
+		str_score += str_val; // nối chuỗi Score: và điểm số
+		score_game.SetText(str_score); // set nội dung cho chữ
+		score_game.LoadFromRenderText(font_time, g_screen);
+		score_game.RenderText(g_screen, SCREEN_WIDTH*0.5 - 50, 15);
+
+		// Show money count
+		std::string str_money_val = std::to_string(p_player.GetMoneyCount()); // chuyển đổi số thành string
+		money_count.SetText(str_money_val); // set nội dung cho chữ
+		money_count.LoadFromRenderText(font_time, g_screen);
+		money_count.RenderText(g_screen, SCREEN_WIDTH * 0.5 - 250, 15);
+
+
+
+
+
+
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 
 		int real_imp_time = fps_timer.get_ticks(); // lấy thời gian thực sự trôi qua

@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
+#include "stdafx.h"
 
 static SDL_Window* g_window = NULL; //build form window
 static SDL_Renderer* g_screen = NULL; // build form renderer
