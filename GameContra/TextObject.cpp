@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿ #include "stdafx.h"
 #include "TextObject.h"
 TextObject::TextObject() {
 	texture_ = NULL;

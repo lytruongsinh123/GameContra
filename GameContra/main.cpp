@@ -10,6 +10,9 @@
 #include "TextObject.h"
 #include "PlayPower.h"
 #include "Geometric.h"
+#include "BossObject.h"
+
+
 BaseObject g_background;
 TTF_Font* font_time = NULL; // đối tượng font chữ hiện thời gian
 bool InitData() { // Khoi tao SDL
@@ -143,6 +146,14 @@ int main(int argc, char* argv[]) {
 
 
 	std::vector<ThreatsObject*> threats_list = MakeThreadList(); // tạo 1 threats list
+
+	//Boss Threat
+	BossObject bossObject;
+	bool ret = bossObject.LoadImg("img//boss_object.png", g_screen);
+	bossObject.set_clips();
+	int xPosBoss = MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6;
+	bossObject.set_xpos(xPosBoss);
+	bossObject.set_ypos(10);
 
 	ExplosionObject exp_threat;
 	ExplosionObject exp_main;
@@ -417,9 +428,14 @@ int main(int argc, char* argv[]) {
 		money_count.LoadFromRenderText(font_time, g_screen);
 		money_count.RenderText(g_screen, SCREEN_WIDTH * 0.5 - 250, 15);
 
-
-
-
+		//Show Boss
+		int val = MAX_MAP_X * TILE_SIZE - (map_data.start_X_ + p_player.GetRect().x);
+		if (val <= SCREEN_WIDTH) {
+			bossObject.SetMapXY(map_data.start_X_, map_data.start_Y_);
+			bossObject.DoPlayer(map_data);
+			bossObject.MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
+			bossObject.Show(g_screen);
+		}
 
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer

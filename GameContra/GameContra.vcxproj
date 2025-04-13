@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="BaseFunction.cpp" />
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="BossObject.cpp" />
     <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
     <ClCompile Include="ExplosionObject.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="BaseFunction.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="BossObject.h" />
     <ClInclude Include="BulletObject.h" />
     <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="ExplosionObject.h" />
