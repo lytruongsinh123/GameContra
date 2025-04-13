@@ -47,6 +47,7 @@ public:
 
     void InitBullet(SDL_Renderer* screen);
     void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit);
+    void RemoveBullet(const int& idx);
 
 private:
     int map_x_;

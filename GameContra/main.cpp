@@ -142,18 +142,18 @@ int main(int argc, char* argv[]) {
 	PlayerMoney player_money; // tạo đối tượng đồng tiền
 	player_money.Init(g_screen); // khởi tạo đồng tiền
 	player_money.SetPos(SCREEN_WIDTH * 0.5 - 290, 8);
-
-
-
 	std::vector<ThreatsObject*> threats_list = MakeThreadList(); // tạo 1 threats list
+
 
 	//Boss Threat
 	BossObject bossObject;
 	bool ret = bossObject.LoadImg("img//boss_object.png", g_screen);
 	bossObject.set_clips();
-	int xPosBoss = MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6;
+	int xPosBoss = /*MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6*/ 400;
 	bossObject.set_xpos(xPosBoss);
 	bossObject.set_ypos(10);
+
+
 
 	ExplosionObject exp_threat;
 	ExplosionObject exp_main;
@@ -430,13 +430,49 @@ int main(int argc, char* argv[]) {
 
 		//Show Boss
 		int val = MAX_MAP_X * TILE_SIZE - (map_data.start_X_ + p_player.GetRect().x);
-		if (val <= SCREEN_WIDTH) {
+		/*if (val <= SCREEN_WIDTH) {*/
 			bossObject.SetMapXY(map_data.start_X_, map_data.start_Y_);
 			bossObject.DoPlayer(map_data);
 			bossObject.MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 			bossObject.Show(g_screen);
-		}
-
+		/*}*/
+			bool bCol3 = false; // biến kiểm tra va chạm giữa boss và nhân vật
+			SDL_Rect rect_player = p_player.GetRectFrame(); // lấy vị trí của nhân vật
+			for (int bossbl = 0;  bossbl < bossObject.get_bullet_list().size();  bossbl++)
+			{
+				BulletObject* p_boss_bullet = bossObject.get_bullet_list().at(bossbl);
+				if (p_boss_bullet != NULL)
+				{
+					bCol3 = SDLCommonFunc::CheckCollision(p_boss_bullet->GetRect(), rect_player);
+					if (bCol3)
+					{
+						cout << "co su va cham dan va nhan vat" << endl;
+						bossObject.RemoveBullet(bossbl); // xóa viên đạn
+						break; // khi xảy ra va chạm rồi sẽ thoát khỏi vòng lặp ko kiểm tra với các viên đạn còn lại
+					}
+				}
+			}
+			if (bCol3) {
+				num_die++;
+				if (num_die <= 3) // mạng là 3
+				{// hồi sinh
+					p_player.SetRect(100, 0);
+					p_player.set_comeback_time(60); // thời gian hồi sinh
+					SDL_Delay(1000); // tạm dừng 1 giây
+					player_power.DeCrease(); // giảm số mạng
+					player_power.Render(g_screen); // hiện số mạng
+					continue;
+				}
+				else {
+					if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) {
+						bossObject.Free();
+						close();
+						SDL_Quit();
+						return 0;
+					}
+				}
+			}
+			
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 
