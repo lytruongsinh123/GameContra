@@ -166,6 +166,7 @@ int main(int argc, char* argv[]) {
 	if (!tRet) return 0;
 
 	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
+	int num_die_boss = 100;
 	int num_die = 0; // mạng
 	TextObject time_game;
 	TextObject score_game;
@@ -293,6 +294,7 @@ int main(int argc, char* argv[]) {
 		int frame_exp_height = exp_threat.get_frame_height(); 
 
 		// Lấy danh sách các viên đạn của nhân vật game
+		
 		/*
 		std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
 		for (int bl = 0; bl < bullet_list.size(); bl++) {
@@ -320,6 +322,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		*/
+		
 		
 		
 		std::vector<BulletObject*> bullet_list = p_player.get_bullet_list();
@@ -472,6 +475,28 @@ int main(int argc, char* argv[]) {
 					}
 				}
 			}
+			
+
+
+		for (int bl = 0; bl < bullet_list.size(); bl++) {
+			BulletObject* p_bullet = bullet_list.at(bl);
+			if (p_bullet != NULL) {
+				SDL_Rect tRect;
+				tRect.x = bossObject.GetRect().x;
+				tRect.y = bossObject.GetRect().y;
+				tRect.w = bossObject.get_width_frame();
+				tRect.h = bossObject.get_height_frame();
+
+				SDL_Rect bRect = p_bullet->GetRect();
+				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+				if (bCol) {
+					cout << "va cham dan nhan vat voi boss" << endl;
+					p_player.RemoveBullet(bl); // xóa viên đạn
+					bossObject.Free(); // xóa threat
+				}	
+			}
+		}
+		
 			
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
