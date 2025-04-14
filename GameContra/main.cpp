@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 	BossObject bossObject;
 	bool ret = bossObject.LoadImg("img//boss_object.png", g_screen);
 	bossObject.set_clips();
-	int xPosBoss = /*MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6*/ 400;
+	int xPosBoss = /*MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6*/ 1000;
 	bossObject.set_xpos(xPosBoss);
 	bossObject.set_ypos(10);
 
@@ -166,6 +166,7 @@ int main(int argc, char* argv[]) {
 	if (!tRet) return 0;
 
 	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
+	int num_die_boss = 5;
 	int num_die = 0; // mạng
 	TextObject time_game;
 	TextObject score_game;
@@ -393,8 +394,36 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		std::vector<BulletObject*> bullet_list2 = p_player.get_bullet_list();
+		for (int bl = 0; bl < bullet_list2.size(); bl++) {
+			BulletObject* p_bullet = bullet_list2.at(bl);
+			if (p_bullet != NULL) {
+				SDL_Rect tRect;
+					tRect.x = bossObject.GetRect().x;
+					tRect.y = bossObject.GetRect().y;
+					tRect.w = bossObject.get_width_frame();
+					tRect.h = bossObject.get_height_frame();
 
+					SDL_Rect bRect = p_bullet->GetRect();
 
+					bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
+					if (bCol) {
+						num_die_boss--;
+						p_player.RemoveBullet(bl); // xóa viên đạn
+						if (num_die_boss == 0) // mạng là 3
+						{
+							if (MessageBox(NULL, L"GAME WIN", L"Info", MB_OK | MB_ICONSTOP) == IDOK) {
+								bossObject.Free();
+								close();
+								SDL_Quit();
+								return 0;
+							}
+						}
+					}
+				}
+			}
+		
+		
 
 		// Show game time
 		std::string str_time = "Time: ";
@@ -427,6 +456,7 @@ int main(int argc, char* argv[]) {
 		money_count.SetText(str_money_val); // set nội dung cho chữ
 		money_count.LoadFromRenderText(font_time, g_screen);
 		money_count.RenderText(g_screen, SCREEN_WIDTH * 0.5 - 250, 15);
+
 
 		//Show Boss
 		int val = MAX_MAP_X * TILE_SIZE - (map_data.start_X_ + p_player.GetRect().x);
