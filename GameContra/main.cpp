@@ -148,6 +148,15 @@ int main(int argc, char* argv[]) {
 	//Boss Threat
 	BossObject bossObject;
 	bool ret = bossObject.LoadImg("img//boss_object.png", g_screen);
+	bool ImgHp = bossObject.LoadImgHp("img//HP_1.png", g_screen);
+	if (ImgHp) {
+		cout << "Load HP success" << endl;
+		cout << "Width: " << bossObject.get_hp_width_frame() << endl;
+		cout << "Height: " << bossObject.get_hp_height_frame() << endl;
+	}
+	else {
+		cout << "Load HP fail" << endl;
+	}
 	bossObject.set_clips();
 	int xPosBoss = /*MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6*/ 1000;
 	bossObject.set_xpos(xPosBoss);
@@ -166,11 +175,8 @@ int main(int argc, char* argv[]) {
 	if (!tRet) return 0;
 
 	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
-<<<<<<< HEAD
-	int num_die_boss = 5;
-=======
 	int num_die_boss = 100;
->>>>>>> 58569ce535647b6288f054a5208fcda0551ffcbc
+	bossObject.set_current_hp(num_die_boss); // set số máu của boss
 	int num_die = 0; // mạng
 	TextObject time_game;
 	TextObject score_game;
@@ -415,6 +421,8 @@ int main(int argc, char* argv[]) {
 					bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 					if (bCol) {
 						num_die_boss--;
+						score_val++; // tăng điểm số khi bắn trúng quái
+						bossObject.set_current_hp(num_die_boss); // set số máu của boss
 						p_player.RemoveBullet(bl); // xóa viên đạn
 						if (num_die_boss == 0) // mạng là 3
 						{

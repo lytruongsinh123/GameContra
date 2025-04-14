@@ -1,4 +1,4 @@
-
+﻿
 
 #ifndef BOSS_OBJECT_H_
 #define BOSS_OBJECT_H_
@@ -35,7 +35,8 @@ public:
 
     int get_width_frame() const {return width_frame_;}
     int get_height_frame() const {return height_frame_;}
-
+	int get_hp_width_frame() const { return hp_width_frame_; }
+	int get_hp_height_frame() const { return hp_height_frame_; }
     void SetMapXY(const int map_x, const int map_y) {map_x_ = map_x, map_y_ = map_y;};
 
     void CheckToMap(Map& g_map);
@@ -48,8 +49,11 @@ public:
     void InitBullet(SDL_Renderer* screen);
     void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit);
     void RemoveBullet(const int& idx);
-
+    bool LoadImgHp(std::string path, SDL_Renderer* screen);
+	void ShowHp(SDL_Renderer* des);
+    void set_current_hp(int hp) { current_hp_ = hp; }
 private:
+    SDL_Texture* hp_texture_; // Texture của thanh máu
     int map_x_;
     int map_y_;
     int on_ground_;
@@ -63,6 +67,10 @@ private:
     float y_val_;
     int width_frame_;
     int height_frame_;
+    int hp_width_frame_;
+	int hp_height_frame_;
+    int current_hp_; // Số máu hiện tại của Boss
+    int max_hp_; // Số máu tối đa của Boss
     std::vector<BulletObject*> bullet_list_;
 };
 

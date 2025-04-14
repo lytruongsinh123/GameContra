@@ -15,11 +15,20 @@ BossObject::BossObject()
     think_time_ = 0;
     map_x_ = 0;
     map_y_ = 0;
+    hp_texture_ = NULL;
+    hp_width_frame_ = 0;
+    hp_height_frame_ = 0;
+    current_hp_ = 0; // Số máu hiện tại của Boss
+    max_hp_ = 100; // Số máu tối đa của Boss
 }
 
 BossObject::~BossObject()
 {
-
+    if (hp_texture_ != NULL)
+    {
+        SDL_DestroyTexture(hp_texture_);
+        hp_texture_ = NULL;
+    }
 }
 
 bool BossObject::LoadImg(std::string path, SDL_Renderer* screen)
@@ -35,6 +44,39 @@ bool BossObject::LoadImg(std::string path, SDL_Renderer* screen)
     return ret;
 }
 
+bool BossObject::LoadImgHp(std::string path, SDL_Renderer* screen)
+{
+    SDL_Surface* load_surface = IMG_Load(path.c_str());
+	if (load_surface != NULL)
+	{
+        hp_texture_ = SDL_CreateTextureFromSurface(screen, load_surface); // Tao texture tu surface 
+		if (hp_texture_ != NULL) { // Gan gia tri cho rect
+			hp_width_frame_ = load_surface->w;
+			hp_height_frame_ = load_surface->h;
+		}
+		SDL_FreeSurface(load_surface); // Xoa surface
+	}
+    return hp_texture_ != NULL;
+
+}
+void BossObject::ShowHp(SDL_Renderer* des)
+{
+    if (hp_texture_ != NULL)
+    {
+        // Tính toán vị trí và kích thước của thanh máu
+        int hp_bar_width = (current_hp_ * hp_width_frame_) / max_hp_;
+        SDL_Rect renderQuad = { x_pos_ - map_x_, y_pos_ - map_y_ - hp_height_frame_ - 10, hp_bar_width, hp_height_frame_ };
+
+        // Tính toán màu sắc dựa trên tỷ lệ máu còn lại
+        float hp_ratio = static_cast<float>(current_hp_) / max_hp_;
+        Uint8 red = static_cast<Uint8>((1.0f - hp_ratio) * 255);
+        Uint8 green = static_cast<Uint8>(hp_ratio * 255);
+        SDL_SetRenderDrawColor(des, red, green, 0, 255);
+
+        // Vẽ thanh máu
+        SDL_RenderFillRect(des, &renderQuad);
+    }
+}
 void BossObject::set_clips()
 {
     //Clip the sprites
@@ -72,6 +114,7 @@ void BossObject::Show(SDL_Renderer* des)
         }
 
         SDL_RenderCopy(des, p_object_, currentClip, &renderQuad );
+        ShowHp(des);
     }
 }
 
