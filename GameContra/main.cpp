@@ -1,4 +1,5 @@
 ﻿#include "SDL.h"
+#include "SDL_mixer.h"
 #include "stdafx.h"
 #include "BaseFunction.h"
 #include "BaseObject.h"
@@ -11,15 +12,16 @@
 #include "PlayPower.h"
 #include "Geometric.h"
 #include "BossObject.h"
-
+#include "SoundManager.h"
 
 BaseObject g_background;
 TTF_Font* font_time = NULL; // đối tượng font chữ hiện thời gian
 bool InitData() { // Khoi tao SDL
 	bool success = true;
-	int ret = SDL_Init(SDL_INIT_VIDEO);
+	int ret = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);  // Khởi tạo audio kèm video
 	if (ret < 0)
 		return false;
+
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"); //Set ti le chat luong cua renderer
 
@@ -124,6 +126,25 @@ int main(int argc, char* argv[]) {
 	if (LoadBackground() == false)
 		return -1;
 
+	// ---------------- Khởi tạo SoundManager và tải âm thanh ----------------
+	SoundManager soundManager;
+	if (!soundManager.init(44100, MIX_DEFAULT_FORMAT, 2, 2048)) {
+		cout << "SoundManager initialization failed!" << endl;
+		return -1;
+	}
+	Mix_Music* backgroundMusic = soundManager.loadMusic("sound//background_music.mp3");
+	Mix_Chunk* gunSound = soundManager.loadEffect("sound//gun_shot.wav");
+	Mix_Chunk* explosionSound = soundManager.loadEffect("sound//explosion.wav");
+
+	if (backgroundMusic == nullptr || gunSound == nullptr || explosionSound == nullptr) {
+		cout << "Error loading sound files." << endl;
+		return -1;
+	}
+
+	// Phát nhạc nền (chạy liên tục với loops = -1)
+	if (!soundManager.playMusic(backgroundMusic, -1)) {
+		cout << "Failed to play background music." << endl;
+	}
 
 
 	GameMap game_map_;
@@ -158,7 +179,7 @@ int main(int argc, char* argv[]) {
 		cout << "Load HP fail" << endl;
 	}
 	bossObject.set_clips();
-	int xPosBoss = /*MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6*/ 1000;
+	int xPosBoss = MAX_MAP_X * TILE_SIZE - SCREEN_WIDTH * 0.6; //1000;
 	bossObject.set_xpos(xPosBoss);
 	bossObject.set_ypos(10);
 
@@ -195,6 +216,11 @@ int main(int argc, char* argv[]) {
 			}
 
 			p_player.HandleInputAction(g_event, g_screen);
+
+			// Ví dụ: nếu người chơi nhấn phím SPACE -> phát tiếng súng
+			if (g_event.type == SDL_MOUSEBUTTONDOWN && g_event.button.button == SDL_BUTTON_LEFT) {
+				soundManager.playEffect(gunSound, 0);
+			}
 		}
 
 		SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR); // Set mau cho renderer
@@ -252,8 +278,12 @@ int main(int argc, char* argv[]) {
 						// kiểm tra va chạm giữa viên đạn và nhân vật
 						bCol1 = SDLCommonFunc::CheckCollision(pt_bullet->GetRect(), rect_player); // kiểm tra va chạm giữa viên đạn và nhân vật
 						if(bCol1) {
+							// Phát hiệu ứng tiếng nổ khi có va chạm
+							soundManager.playEffect(explosionSound, 0);
 							cout << "co su va cham dan va nhan vat" << endl;
+
 							p_threat->RemoveBullet(jj); // xóa viên đạn
+
 							break; // khi xảy ra va chạm rồi sẽ thoát khỏi vòng lặp ko kiểm tra với các viên đạn còn lại
 						}
 					}
@@ -265,6 +295,9 @@ int main(int argc, char* argv[]) {
 				// khi chết hiện thông báo game over
 				if (bCol2) {
 					cout << "co su va cham nhan vat va threat" << endl;
+
+					// Phát hiệu ứng tiếng nổ khi có va chạm
+					soundManager.playEffect(explosionSound, 0);
 				}
 
 				if (bCol1 || bCol2) {
@@ -277,6 +310,9 @@ int main(int argc, char* argv[]) {
 						exp_main.SetRect(x_pos, y_pos); // lấy tâm vị trí nổ là vị trí của nhân vật
 						exp_main.Show(g_screen); // hiện ảnh vụ nổ
 						SDL_RenderPresent(g_screen); // cập nhật renderer
+
+						// Phát hiệu ứng tiếng nổ khi có va chạm
+						soundManager.playEffect(explosionSound, 0);
 					}
 					num_die++;
 					if (num_die <= 3) // mạng là 3
@@ -353,6 +389,7 @@ int main(int argc, char* argv[]) {
 
 						bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 						if (bCol) {
+							soundManager.playEffect(explosionSound, 0);
 							score_val++; // tăng điểm số khi bắn trúng quái
 							for (int ex = 0; ex < NUM_FRAME_EXP; ex++) { // for chạy 8 khung hình của vụ nổ
 								int x_pos = p_bullet->GetRect().x - frame_exp_width * 0.5; // lấy vị trí để đặt tấm ảnh vụ nổ // chính là vị trí viên đạn
@@ -420,6 +457,7 @@ int main(int argc, char* argv[]) {
 
 					bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 					if (bCol) {
+						soundManager.playEffect(explosionSound, 0);
 						num_die_boss--;
 						score_val++; // tăng điểm số khi bắn trúng quái
 						bossObject.set_current_hp(num_die_boss); // set số máu của boss
@@ -474,12 +512,12 @@ int main(int argc, char* argv[]) {
 
 		//Show Boss
 		int val = MAX_MAP_X * TILE_SIZE - (map_data.start_X_ + p_player.GetRect().x);
-		/*if (val <= SCREEN_WIDTH) {*/
+		if (val <= SCREEN_WIDTH) {
 			bossObject.SetMapXY(map_data.start_X_, map_data.start_Y_);
 			bossObject.DoPlayer(map_data);
 			bossObject.MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 			bossObject.Show(g_screen);
-		/*}*/
+		}
 			bool bCol3 = false; // biến kiểm tra va chạm giữa boss và nhân vật
 			SDL_Rect rect_player = p_player.GetRectFrame(); // lấy vị trí của nhân vật
 			for (int bossbl = 0;  bossbl < bossObject.get_bullet_list().size();  bossbl++)
@@ -490,6 +528,7 @@ int main(int argc, char* argv[]) {
 					bCol3 = SDLCommonFunc::CheckCollision(p_boss_bullet->GetRect(), rect_player);
 					if (bCol3)
 					{
+						soundManager.playEffect(explosionSound, 0);
 						cout << "co su va cham dan va nhan vat" << endl;
 						bossObject.RemoveBullet(bossbl); // xóa viên đạn
 						break; // khi xảy ra va chạm rồi sẽ thoát khỏi vòng lặp ko kiểm tra với các viên đạn còn lại
@@ -497,6 +536,11 @@ int main(int argc, char* argv[]) {
 				}
 			}
 			if (bCol3) {
+				soundManager.playEffect(explosionSound, 0);
+
+				// Phát hiệu ứng tiếng nổ khi có va chạm
+				soundManager.playEffect(explosionSound, 0);
+
 				num_die++;
 				if (num_die <= 3) // mạng là 3
 				{// hồi sinh
@@ -531,6 +575,7 @@ int main(int argc, char* argv[]) {
 				SDL_Rect bRect = p_bullet->GetRect();
 				bool bCol = SDLCommonFunc::CheckCollision(bRect, tRect);
 				if (bCol) {
+					soundManager.playEffect(explosionSound, 0);
 					cout << "va cham dan nhan vat voi boss" << endl;
 					p_player.RemoveBullet(bl); // xóa viên đạn
 					bossObject.Free(); // xóa threat
@@ -562,6 +607,12 @@ int main(int argc, char* argv[]) {
 	}
 
 	threats_list.clear();
+
+	soundManager.freeMusic(backgroundMusic);
+	soundManager.freeEffect(gunSound);
+	soundManager.freeEffect(explosionSound);
+	soundManager.close();
+
 
 	close();
 	return 0;

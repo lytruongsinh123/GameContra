@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "CharacterObject.h"
+#include "SoundManager.h"
 
 MainObject::MainObject() {
 	frame_ = 0;
