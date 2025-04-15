@@ -266,7 +266,7 @@ int main(int argc, char* argv[]) {
 				p_threat->SetMapXY(map_data.start_X_, map_data.start_Y_); // đặt các threats vào các vị trí trên map theo tọa độ
 				p_threat->ImpMoveType(g_screen); // xử lý di chuyển của threat
 
-				p_threat->DoPlayer(map_data);
+				p_threat->DoPlayer(map_data, g_screen);
 				p_threat->MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 				p_threat->Show(g_screen); // show ra
 

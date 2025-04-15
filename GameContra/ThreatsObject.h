@@ -34,8 +34,8 @@ public:
     void Show(SDL_Renderer* des); // biểu diễn threat trên cửa sổ
     int get_width_frame() const { return width_frame_; }
     int get_height_frame() const { return height_frame_; }
-    void DoPlayer(Map& gMap); // threats đứng yên hay di chuyển gì đó
-    void CheckToMap(Map& gMap); // kéo threats theo khi mà bản đồ di chuyển
+    void DoPlayer(Map& gMap, SDL_Renderer* screen); // threats đứng yên hay di chuyển gì đó
+    void CheckToMap(Map& gMap, SDL_Renderer* screen); // kéo threats theo khi mà bản đồ di chuyển
 	void InitThreats(); // khởi tạo threat
 	void set_type_move(const int& typemove) { type_move_ = typemove; }
 	void setAnimationPos(const int& pos_a, const int& pos_b) { animation_a_ = pos_a; animation_b_ = pos_b; } // vị trí di chuyển
@@ -49,7 +49,6 @@ public:
     void InitBullet(BulletObject* p_bullet, SDL_Renderer* screen); // xử lý thông số của đạn
     void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit);
     void RemoveBullet(const int& idx);
-
 private:
 
     int map_x_; // giới hạn với bản đồ

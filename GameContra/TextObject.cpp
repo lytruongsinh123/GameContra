@@ -10,6 +10,7 @@ TextObject::TextObject() {
 }
 
 TextObject::~TextObject() {
+	cout << "Free TextObject" << endl;
 	Free(); // giải phóng texture
 }
 bool TextObject::LoadFromRenderText(TTF_Font* font, SDL_Renderer* screen) {
