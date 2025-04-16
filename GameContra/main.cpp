@@ -314,7 +314,7 @@ int main(int argc, char* argv[]) {
 						// Phát hiệu ứng tiếng nổ khi có va chạm
 						soundManager.playEffect(explosionSound, 0);
 					}
-					if (player_power.GetNumber() >= 0) // mạng là 3
+					if (player_power.GetNumber() > 0) // mạng là 3
 					{// hồi sinh
 						p_player.SetRect(100, 0);
 						p_player.set_comeback_time(60); // thời gian hồi sinh
@@ -553,7 +553,7 @@ int main(int argc, char* argv[]) {
 					SDL_RenderPresent(g_screen); // cập nhật renderer
 				}
 				soundManager.playEffect(explosionSound, 0);
-				if (player_power.GetNumber() >= 0) // mạng là 3
+				if (player_power.GetNumber() > 0) // mạng là 3
 				{// hồi sinh
 					p_player.SetRect(100, 0);
 					p_player.set_comeback_time(60); // thời gian hồi sinh
@@ -605,7 +605,7 @@ int main(int argc, char* argv[]) {
 
 			// Phát hiệu ứng tiếng nổ khi có va chạm
 			soundManager.playEffect(explosionSound, 0);
-			if (player_power.GetNumber() >= 0) // mạng là 3
+			if (player_power.GetNumber() > 0) // mạng là 3
 			{// hồi sinh
 				p_player.SetRect(100, 0);
 				p_player.set_comeback_time(60); // thời gian hồi sinh
@@ -638,6 +638,24 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		//----------------------cắn thuốc-------------------------
+
+		//----------------------rơi xuống vực---------------------
+		if (p_player.get_fall_down()) {
+			if (player_power.GetNumber() > 0) // mạng là 3
+			{// hồi sinh
+				player_power.DeCrease(); // giảm số mạng
+				p_player.set_fall_down(false);
+				cout << "so mang con lai sau khi roi xuong vuc: " << player_power.GetNumber() << endl;
+			}
+			else {
+				if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK) {
+					close();
+					SDL_Quit();
+					return 0;
+				}
+			}
+		}
+		//----------------------rơi xuống vực---------------------
 
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer

@@ -22,6 +22,7 @@ MainObject::MainObject() {
 	come_back_time_ = 0;
 	money_count_ = 0;
 	eat_grass_Hp_ = false; // Corrected identifier
+	fall_down_ = false; // kiểm tra có rơi xuống vực không
 }
 MainObject::~MainObject() {
 
@@ -648,7 +649,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 		x_pos_ = map_data.max_X_ - width_frame_ - 1;
 	}
 	if (y_pos_ > map_data.max_Y_) {
-		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
+		come_back_time_ = 60;
+		if (!fall_down_) { // Only set fall_down_ to true if it is currently false
+			fall_down_ = true; // Set fall_down_ to true when the character falls off the map
+		}
 	}
 }
 

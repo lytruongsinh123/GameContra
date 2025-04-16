@@ -41,8 +41,11 @@ public:
 	int GetMoneyCount() const { return money_count_; } // lấy số tiền
 	bool get_eat_grass_Hp() const { return eat_grass_Hp_; } // lấy trạng thái ăn cỏ
 	void set_eat_grass_Hp(const bool& eat) { eat_grass_Hp_ = eat; } // set trạng thái ăn cỏ
+	void set_fall_down(const bool& fall) { fall_down_ = fall; } // set trạng thái rơi xuống
+	bool get_fall_down() const { return fall_down_; } // lấy trạng thái rơi xuống
 private:
 	bool eat_grass_Hp_; // kiểm tra có ăn được cỏ không
+	bool fall_down_; // kiểm tra có rơi xuống không
 	int money_count_; // số tiền ăn được
 	std::vector<BulletObject*> p_bullet_list_; // lưu danh sách đạn
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_

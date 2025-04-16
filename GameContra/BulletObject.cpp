@@ -18,7 +18,12 @@ bool BulletObject::LoadImgBullet(SDL_Renderer* des) {
 		ret = LoadImg("img//sphere_bullet.png", des);
 	}
 	else {
-		ret = LoadImg("img//laser_bullet.png", des);
+		if (bullet_type_ == LASER_BULLET) {
+			ret = LoadImg("img//laser_bullet.png", des);
+		}
+		else if (bullet_type_ == BLUE_BULLET) {
+			ret = LoadImg("img//bullet_blue.png", des);
+		}
 	}
 	return ret;
 }

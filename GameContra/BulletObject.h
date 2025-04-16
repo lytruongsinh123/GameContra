@@ -20,7 +20,8 @@ public:
 
 	enum BulletType {
 		SPHERE_BULLET = 50,
-		LASER_BULLET =51,
+		LASER_BULLET = 51,
+		BLUE_BULLET = 52,
 	};
 
 	void set_x_val(const int& xVal) { x_val_ = xVal; }
