@@ -13,6 +13,7 @@
 #include "Geometric.h"
 #include "BossObject.h"
 #include "SoundManager.h"
+#include "Menu.h"
 
 BaseObject g_background;
 TTF_Font* font_time = NULL; // đối tượng font chữ hiện thời gian
@@ -125,6 +126,15 @@ int main(int argc, char* argv[]) {
 	if (LoadBackground() == false)
 		return -1;
 
+	// ======= Hiển thị Menu =========
+	Menu menu;
+	if (!menu.Init(g_screen)) return -1;
+	int menu_result = menu.ShowMenu(g_screen, font_time);
+	if (menu_result != 1) {
+		close();
+		return 0;
+	}
+
 	// ---------------- Khởi tạo SoundManager và tải âm thanh ----------------
 	SoundManager soundManager;
 	if (!soundManager.init(44100, MIX_DEFAULT_FORMAT, 2, 2048)) {
@@ -209,6 +219,7 @@ int main(int argc, char* argv[]) {
 	score_game.SetColor(TextObject::WHITE_TEXT); // set màu trắng cho chữ
 	UINT score_val = 0;
 	money_count.SetColor(TextObject::WHITE_TEXT); // set màu trắng cho chữ
+
 	bool is_quit = false;
 	while (!is_quit) { // Game loop
 		fps_timer.start(); // lưu thời gian khi bắt đầu game

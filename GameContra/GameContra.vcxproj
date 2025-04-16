@@ -138,6 +138,7 @@
     <ClCompile Include="ExplosionObject.cpp" />
     <ClCompile Include="Game_map.cpp" />
     <ClCompile Include="Geometric.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ImpTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayPower.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Game_map.h" />
     <ClInclude Include="Geometric.h" />
     <ClInclude Include="ImpTimer.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="PlayPower.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="ThreatsObject.h" />
