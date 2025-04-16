@@ -36,7 +36,12 @@ const int RENDER_DRAW_COLOR = 0XFF;
 #define MAX_MAP_X  400
 #define MAX_MAP_Y  10
 
-#define STATE_MONEY 4 // Chỉ cố của ô tiền
+#define STATE_MONEY 8 // Chỉ cố của ô tiền
+#define TREE1 6
+#define DRUG_HP 7
+#define TREE3 41
+#define TREE4 42
+#define TREE5 43
 typedef struct {
 	int left_; // di chuyển sang trái 
 	int right_; // ______________phải

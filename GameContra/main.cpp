@@ -53,7 +53,7 @@ bool InitData() { // Khoi tao SDL
 }
 
 bool LoadBackground() { // Load background
-	bool ret = g_background.LoadImg("img//background.png", g_screen);  // Load background from file
+	bool ret = g_background.LoadImg("img//bkgn1.png", g_screen);  // Load background from file
 	if (ret == false)
 		return false;
 
@@ -63,7 +63,7 @@ bool LoadBackground() { // Load background
 std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên bản đồ
 {
 	std::vector<ThreatsObject*> list_threats; // vector chứa các đối tượng trên bản đồ
-	ThreatsObject* dynamic_threats = new ThreatsObject[20]; // có 20 threats trên bản đồ
+	ThreatsObject* dynamic_threats = new ThreatsObject[30]; // có 20 threats trên bản đồ
 	for (int i = 0; i < 20; ++i) {
 	
 			ThreatsObject* p_threat = dynamic_threats + i;
@@ -95,7 +95,6 @@ std::vector<ThreatsObject*> MakeThreadList() // hàm tạo đối tượng trên
 			p_threat->set_y_pos(250); // phân bố ở ngay trên map
 			p_threat->set_type_move(ThreatsObject::STATIC_THREAT); // loại di chuyển của threat
 			p_threat->set_input_left(0); // không di chuyển
-
 			BulletObject* p_bullet = new BulletObject(); // tạo viên đạn
 			p_threat->InitBullet(p_bullet, g_screen); // khởi tạo đạn lên screen
 			list_threats.push_back(p_threat); // thêm vào danh sách
@@ -148,7 +147,7 @@ int main(int argc, char* argv[]) {
 
 
 	GameMap game_map_;
-	game_map_.LoadMap("map_good//map01.dat");
+	game_map_.LoadMap("map1//map.dat");
 	game_map_.LoadTiles(g_screen);
 
 
@@ -202,7 +201,6 @@ int main(int argc, char* argv[]) {
 	//--------------------------Hiện màn hình các số liên quan đến game--------------------------
 	int num_die_boss = 100;
 	bossObject.set_current_hp(num_die_boss); // set số máu của boss
-	int num_die = 0; // mạng
 	TextObject time_game;
 	TextObject score_game;
 	TextObject money_count;
@@ -266,7 +264,7 @@ int main(int argc, char* argv[]) {
 				p_threat->SetMapXY(map_data.start_X_, map_data.start_Y_); // đặt các threats vào các vị trí trên map theo tọa độ
 				p_threat->ImpMoveType(g_screen); // xử lý di chuyển của threat
 
-				p_threat->DoPlayer(map_data, g_screen);
+				p_threat->DoPlayer(map_data);
 				p_threat->MakeBullet(g_screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 				p_threat->Show(g_screen); // show ra
 
@@ -285,9 +283,7 @@ int main(int argc, char* argv[]) {
 							// Phát hiệu ứng tiếng nổ khi có va chạm
 							soundManager.playEffect(explosionSound, 0);
 							cout << "co su va cham dan va nhan vat" << endl;
-
 							p_threat->RemoveBullet(jj); // xóa viên đạn
-
 							break; // khi xảy ra va chạm rồi sẽ thoát khỏi vòng lặp ko kiểm tra với các viên đạn còn lại
 						}
 					}
@@ -318,14 +314,18 @@ int main(int argc, char* argv[]) {
 						// Phát hiệu ứng tiếng nổ khi có va chạm
 						soundManager.playEffect(explosionSound, 0);
 					}
-					num_die++;
-					if (num_die <= 3) // mạng là 3
+					if (player_power.GetNumber() >= 0) // mạng là 3
 					{// hồi sinh
 						p_player.SetRect(100, 0);
 						p_player.set_comeback_time(60); // thời gian hồi sinh
 						SDL_Delay(1000); // tạm dừng 1 giây
 						player_power.DeCrease(); // giảm số mạng
+						cout << "so mang con lai: " << player_power.GetNumber() << endl;
 						player_power.Render(g_screen); // hiện số mạng
+						// khôi phục lại đạn cho quái 
+						if (p_threat->get_type_move() == 0 && p_threat->get_bullet_list().size() == 0) {
+							p_threat->InitBullet(new BulletObject(), g_screen); // khôi phục lại đạn cho quái
+						}
 						continue;
 					}
 					else {
@@ -553,13 +553,13 @@ int main(int argc, char* argv[]) {
 					SDL_RenderPresent(g_screen); // cập nhật renderer
 				}
 				soundManager.playEffect(explosionSound, 0);
-				num_die++;
-				if (num_die <= 3) // mạng là 3
+				if (player_power.GetNumber() >= 0) // mạng là 3
 				{// hồi sinh
 					p_player.SetRect(100, 0);
 					p_player.set_comeback_time(60); // thời gian hồi sinh
 					SDL_Delay(1000); // tạm dừng 1 giây
 					player_power.DeCrease(); // giảm số mạng
+					cout << "so mang con lai sau khi combat voi boss: " << player_power.GetNumber() << endl;
 					player_power.Render(g_screen); // hiện số mạng
 					continue;
 				}
@@ -605,14 +605,13 @@ int main(int argc, char* argv[]) {
 
 			// Phát hiệu ứng tiếng nổ khi có va chạm
 			soundManager.playEffect(explosionSound, 0);
-
-			num_die++;
-			if (num_die <= 3) // mạng là 3
+			if (player_power.GetNumber() >= 0) // mạng là 3
 			{// hồi sinh
 				p_player.SetRect(100, 0);
 				p_player.set_comeback_time(60); // thời gian hồi sinh
 				SDL_Delay(1000); // tạm dừng 1 giây
 				player_power.DeCrease(); // giảm số mạng
+				cout << "so mang con lai trung dan boss: " << player_power.GetNumber() << endl;
 				player_power.Render(g_screen); // hiện số mạng
 				continue;
 			}
@@ -625,7 +624,21 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-			
+
+		//----------------------cắn thuốc-------------------------
+		if (p_player.get_eat_grass_Hp()) {
+			if (player_power.GetNumber() < 4) {
+				player_power.InCrease();
+				cout << "so mang con lai sau khi can thuoc: " << player_power.GetNumber() << endl;
+				p_player.set_eat_grass_Hp(false); // set lại trạng thái cắn thuốc
+			}
+			else {
+				p_player.set_eat_grass_Hp(false); // set lại trạng thái cắn thuốc
+				cout << "so mang con lai sau khi can thuoc qua lieu: " << player_power.GetNumber() << endl;
+			}
+		}
+		//----------------------cắn thuốc-------------------------
+
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 

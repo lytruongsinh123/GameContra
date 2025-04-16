@@ -27,6 +27,7 @@ ThreatsObject::~ThreatsObject() // hủy object
 
 bool ThreatsObject::LoadImg(std::string path, SDL_Renderer* screen)
 {
+	renderer_ = screen; // Set the renderer
 	bool ret = BaseObject::LoadImg(path, screen); // chạy load img từ Base Object trước, kiểm tra xem load oke ch
 	if (ret)
 	{
@@ -116,7 +117,7 @@ void ThreatsObject::Show(SDL_Renderer* des)
 	}
 }
 
-void ThreatsObject::DoPlayer(Map& gMap, SDL_Renderer* screen) // hàm thể hiện những gì threat sẽ phản ứng khi bị player tác động (cụ thể là die)
+void ThreatsObject::DoPlayer(Map& gMap) // hàm thể hiện những gì threat sẽ phản ứng khi bị player tác động (cụ thể là die)
 {
 	if (come_back_time_ == 0)
 	{
@@ -130,13 +131,15 @@ void ThreatsObject::DoPlayer(Map& gMap, SDL_Renderer* screen) // hàm thể hi�
 		if(input_type_.left_ == 1) {
 			x_val_ -= THREAT_SPEED; // di chuyển qua trái
 		}
-		else if (input_type_.right_ == 1)
-		{
-			x_val_ += THREAT_SPEED; // di chuyển qua phải
+		else {
+			if (input_type_.right_ == 1)
+			{
+				x_val_ += THREAT_SPEED; // di chuyển qua phải
+			}
 		}
 
 
-		CheckToMap(gMap, screen); // kéo threats theo bản đồ, tức là dịch chuyển threats á má
+		CheckToMap(gMap); // kéo threats theo bản đồ, tức là dịch chuyển threats á má
 	}
 	if (come_back_time_ > 0)
 	{
@@ -183,7 +186,7 @@ void ThreatsObject::RemoveBullet(const int& idx) {
 
 
 
-void ThreatsObject::CheckToMap(Map& gMap, SDL_Renderer* screen) // đã giải thích trong hàm main
+void ThreatsObject::CheckToMap(Map& gMap) // đã giải thích trong hàm main
 {
 	int x1 = 0; // giới hạn kiểm tra từ A đến B theo chiều x 
 	int x2 = 0;
@@ -207,54 +210,48 @@ void ThreatsObject::CheckToMap(Map& gMap, SDL_Renderer* screen) // đã giải t
 	   x1, y2 ******** x2,y2
 
 	*/
-	bool collision = false;
+
 
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
 		if (x_val_ > 0) {// nhân  vật đang di chuyển qua phải
 			int val1 = gMap.tile[y1][x2]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
 			int val2 = gMap.tile[y2][x2];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+			if ((val1 != BLANK_TILE && val1 != STATE_MONEY && val1 != TREE1 && val1 != DRUG_HP && val1 != TREE3 && val1 != TREE4 && val1 != TREE5) || (val2 != BLANK_TILE && val2 != STATE_MONEY && val2 != TREE1 && val2 != DRUG_HP && val2 != TREE3 && val2 != TREE4 && val2 != TREE5))
 			{
-				/*x_pos_ = x2 * TILE_SIZE;
+				x_pos_ = x2 * TILE_SIZE;
 				x_pos_ -= (width_frame_ + 1);
-				x_val_ = 0;*/
-				int next_y1 = (y_pos_ - TILE_SIZE) / TILE_SIZE;
-				int next_y2 = (y_pos_ + height_min - 1 - TILE_SIZE) / TILE_SIZE;
-				if (next_y1 >= 0 && next_y2 >= 0 && (gMap.tile[next_y1][x2] == BLANK_TILE || gMap.tile[next_y2][x2] == BLANK_TILE)) {
-					y_pos_ -= TILE_SIZE; // Leo lên bậc
-				}
-				else {
-					x_pos_ = x2 * TILE_SIZE;
-					x_pos_ -= (width_frame_ + 1);
-					x_val_ = 0;
-					collision = true;
+				x_val_ = 0;	
+				// Quay lại khi chạm tường nếu là threat động
+				if (type_move_ != STATIC_THREAT) {
+					input_type_.left_ = 1;
+					input_type_.right_ = 0;
+					animation_b_ = x_pos_ + 256; // Update right boundary to allow wider movement
+					animation_a_ = x_pos_ - 256; // Update left boundary to allow wider m
+					LoadImg("img//threat_left1.png", renderer_); // Load ảnh quay trái
 				}
 			}
-
 	    }
 	    else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
 		    int val1 = gMap.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
 		    int val2 = gMap.tile[y2][x1];
-		    if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+		    if ((val1 != BLANK_TILE && val1 != STATE_MONEY && val1 != TREE1 && val1 != DRUG_HP && val1 != TREE3 && val1 != TREE4 && val1 != TREE5) || (val2 != BLANK_TILE && val2 != STATE_MONEY && val2 != TREE1 && val2 != DRUG_HP && val2 != TREE3 && val2 != TREE4 && val2 != TREE5))
 		    {
-			    /*x_pos_ = (x1 + 1) * TILE_SIZE;
-			    x_val_ = 0;*/
-				int next_y1 = (y_pos_ - TILE_SIZE) / TILE_SIZE;
-				int next_y2 = (y_pos_ + height_min - 1 - TILE_SIZE) / TILE_SIZE;
-				if (next_y1 >= 0 && next_y2 >= 0 && (gMap.tile[next_y1][x1] == BLANK_TILE || gMap.tile[next_y2][x1] == BLANK_TILE)) {
-					y_pos_ -= TILE_SIZE; // Leo lên bậc
-				}
-				else {
-					x_pos_ = (x1 + 1) * TILE_SIZE;
-					x_val_ = 0;
-					collision = true;
+				x_pos_ = (x1 + 1) * TILE_SIZE;
+				x_val_ = 0;
+				// Quay lại khi chạm tường nếu là threat động
+				if (type_move_ != STATIC_THREAT) {
+					input_type_.left_ = 0;
+					input_type_.right_ = 1;
+					animation_b_ = x_pos_ + 256; // Update right boundary to allow wider movement
+					animation_a_ = x_pos_ - 256; // Update left boundary to allow wider m
+					LoadImg("img//threat_right1.png", renderer_); // Load ảnh quay phải
 				}
 		    }
 	    }
     }
 
 		//Check theo chiều dọc
-	int width_min = width_frame_/* < TILE_SIZE ? width_frame_ : TILE_SIZE*/;
+	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
 	x1 = (x_pos_) / TILE_SIZE;
 	x2 = (x_pos_ + width_min) / TILE_SIZE;
 
@@ -265,18 +262,18 @@ void ThreatsObject::CheckToMap(Map& gMap, SDL_Renderer* screen) // đã giải t
 		if (y_val_ > 0) { // nhân vật rơi xuống
 			int val1 = gMap.tile[y2][x1];
 			int val2 = gMap.tile[y2][x2];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+			if ((val1 != BLANK_TILE && val1 != STATE_MONEY && val1 != TREE1 && val1 != DRUG_HP && val1 != TREE3 && val1 != TREE4 && val1 != TREE5) || (val2 != BLANK_TILE && val2 != STATE_MONEY && val2 != TREE1 && val2 != DRUG_HP && val2 != TREE3 && val2 != TREE4 && val2 != TREE5))
 			{
 				y_pos_ = y2 * TILE_SIZE;
 				y_pos_ -= (height_frame_ + 1);
 				y_val_ = 0;
-				on_ground_ = true;
+				on_ground_ = true; // khi chạm đất thì on_ground_ = true
 			}
 		}
 		else if (y_val_ < 0) { // nhân vật nhảy lên
 			int val1 = gMap.tile[y1][x1];
 			int val2 = gMap.tile[y1][x2];
-			if ((val1 != BLANK_TILE && val1 != STATE_MONEY) || (val2 != BLANK_TILE && val2 != STATE_MONEY))
+			if ((val1 != BLANK_TILE && val1 != STATE_MONEY && val1 != TREE1 && val1 != DRUG_HP && val1 != TREE3 && val1 != TREE4 && val1 != TREE5) || (val2 != BLANK_TILE && val2 != STATE_MONEY && val2 != TREE1 && val2 != DRUG_HP && val2 != TREE3 && val2 != TREE4 && val2 != TREE5))
 			{
 				y_pos_ = (y1 + 1) * TILE_SIZE;
 				y_val_ = 0;
@@ -292,23 +289,8 @@ void ThreatsObject::CheckToMap(Map& gMap, SDL_Renderer* screen) // đã giải t
 	else if (x_pos_ + width_frame_ > gMap.max_X_) { // quá giới hạn bản đồ thì dùng lại
 		x_pos_ = gMap.max_X_ - width_frame_ - 1;
 	}
-	cout << y_pos_ << " " << gMap.max_Y_  << endl;
 	if (y_pos_  > gMap.max_Y_) {
 		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
-	}
-	if (collision) {
-		if (input_type_.left_ == 1) {
-			input_type_.left_ = 0;
-			input_type_.right_ = 1;
-			LoadImg("img//threat_right1.png", screen);
-
-		}
-		else if (input_type_.right_ == 1) {
-			input_type_.right_ = 0;
-			input_type_.left_ = 1;
-			LoadImg("img//threat_left1.png", screen);
-
-		}
 	}
 }
 

@@ -30,6 +30,7 @@ bool BaseObject::LoadImg(std::string path, SDL_Renderer* screen) {
 		}
 		SDL_FreeSurface(load_surface); // Xoa surface
 	}
+
 	p_object_ = new_texture; // Gan texture cho p_object
 
 	return p_object_ != NULL; // Neu p_object khac NULL thi return true

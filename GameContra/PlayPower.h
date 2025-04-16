@@ -4,9 +4,10 @@
 #include "BaseObject.h"
 class PlayerPower : public BaseObject {
 public:
+    int GetNumber() const { return number_; } // set số mạng
 	PlayerPower();
 	~PlayerPower();
-	void SetNumber(int num) { number_ = num; } // set số mạng
+	int GetNumber() { return number_; } // lấy số mạng
 	void AddPos(const int& pos); // thêm vị trí vào danh sách
 	void Show(SDL_Renderer* des); // hiện số mạng
 	void Init(SDL_Renderer* screen); // khởi tạo số mạng

@@ -9,7 +9,7 @@ TextObject::TextObject() {
 	height_ = 0;
 }
 
-TextObject::~TextObject() {
+TextObject::~TextObject(){
 	cout << "Free TextObject" << endl;
 	Free(); // giải phóng texture
 }

@@ -10,13 +10,14 @@ void PlayerPower::AddPos(const int& pos) {
 }
 void PlayerPower::Init(SDL_Renderer* screen) {
 	LoadImg("img//player_pw.png", screen); // load hình ảnh số mạng
-	number_ = 3; // mặc định là 10 mạng
+	number_ = 4; // mặc định là 3 mạng
 	if (pos_list_.size() > 0) {
 		pos_list_.clear(); // xóa danh sách vị trí
 	}
 	AddPos(20); // thêm vị trí đầu tiên
 	AddPos(60); // thêm vị trí thứ 2
 	AddPos(100); // thêm vị trí thứ 3
+	AddPos(140);
 }
 void PlayerPower::Show(SDL_Renderer* des) {
 	// show tất cả tấm ảnh theo vị trí
@@ -29,13 +30,13 @@ void PlayerPower::Show(SDL_Renderer* des) {
 	}
 }
 void PlayerPower::InCrease() {
-	number_++;
+	number_++; // tăng số mạng lên 1
 	int last_pos = pos_list_.back(); // lấy vị trí cuối cùng
 	last_pos  += 40; // tăng thêm 40 pixels
 	pos_list_.push_back(last_pos); // thêm vị trí mới vào danh sách
 }
 void PlayerPower::DeCrease() {
-	number_--;
+	number_--; // giảm số mạng đi 1
 	pos_list_.pop_back(); // xóa vị trí cuối cùng
 }
 

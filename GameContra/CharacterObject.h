@@ -39,7 +39,10 @@ public:
 	void IncreaseMoney(); // tăng tiền
 	void set_comeback_time(const int& time) { come_back_time_ = time; } // thời gian quay lại
 	int GetMoneyCount() const { return money_count_; } // lấy số tiền
+	bool get_eat_grass_Hp() const { return eat_grass_Hp_; } // lấy trạng thái ăn cỏ
+	void set_eat_grass_Hp(const bool& eat) { eat_grass_Hp_ = eat; } // set trạng thái ăn cỏ
 private:
+	bool eat_grass_Hp_; // kiểm tra có ăn được cỏ không
 	int money_count_; // số tiền ăn được
 	std::vector<BulletObject*> p_bullet_list_; // lưu danh sách đạn
 	float x_val_; // khi ấn phải(trải) lùi(tiến) 1 lượng x_val_

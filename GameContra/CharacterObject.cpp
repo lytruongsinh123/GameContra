@@ -21,6 +21,7 @@ MainObject::MainObject() {
 	map_y_ = 0;
 	come_back_time_ = 0;
 	money_count_ = 0;
+	eat_grass_Hp_ = false; // Corrected identifier
 }
 MainObject::~MainObject() {
 
@@ -320,6 +321,130 @@ void MainObject::CenterEntityOnMap(Map& map_data) {
 		map_data.start_Y_ = map_data.max_Y_ - SCREEN_HEIGHT;
 	}
 }
+//void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va chạm với map
+//	int x1 = 0; // giới hạn kiểm tra từ A đến B theo chiều x 
+//	int x2 = 0;
+//
+//	int y1 = 0; // giới hạn kiểm tra từ A đến B theo chiều y
+//	int y2 = 0;
+//
+//	//kiểm tra theo chiều ngang
+//	int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
+//
+//	x1 = (x_pos_ + x_val_) / TILE_SIZE; // x1 là vị trí của nhân vật chia cho kích thước của ô vuông
+//	x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE; // x2 là vị trí của nhân vật + chiều rộng của nhân vật - 1 (vì sai số) chia cho kích thước của ô vuông
+//
+//	y1 = (y_pos_) / TILE_SIZE;
+//	y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
+//
+//
+//	/*
+//	   x1, y1 ******** x2, y1
+//	   *
+//	   *
+//	   *
+//	   x1, y2 ******** x2,y2
+//	
+//	*/
+//	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
+//		if (x_val_ > 0) {// nhân  vật đang di chuyển qua phải
+//			int val1 = map_data.tile[y1][x2]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
+//			int val2 = map_data.tile[y2][x2];
+//
+//			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+//				map_data.tile[y1][x2] = 0; // xóa tiền
+//				map_data.tile[y2][x2] = 0;
+//				IncreaseMoney(); // tăng tiền
+//			}
+//			else {
+//				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+//					x_pos_ = x2 * TILE_SIZE;
+//					x_pos_ -= (width_frame_ + 1);
+//					x_val_ = 0;
+//				}
+//			}
+//		}
+//		else if (x_val_ < 0) { // nhân vật di chuyển qua trái 
+//			int val1 = map_data.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
+//			int val2 = map_data.tile[y2][x1];
+//
+//			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+//				map_data.tile[y1][x1] = 0; // xóa tiền
+//				map_data.tile[y2][x1] = 0;
+//				IncreaseMoney(); // tăng tiền
+//			}
+//			else {
+//				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+//					x_pos_ = (x1 + 1) * TILE_SIZE;
+//					x_val_ = 0;
+//				}
+//			}
+//		}
+//	}
+//
+//	//Check theo chiều dọc
+//	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
+//	x1 = (x_pos_) / TILE_SIZE;
+//	x2 = (x_pos_ + width_min) / TILE_SIZE;
+//
+//	y1 = (y_pos_ + y_val_) / TILE_SIZE;
+//	y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
+//
+//	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
+//		if (y_val_ > 0) { // nhân vật rơi xuống
+//			int val1 = map_data.tile[y2][x1];
+//			int val2 = map_data.tile[y2][x2];
+//
+//			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+//				map_data.tile[y2][x1] = 0; // xóa tiền
+//				map_data.tile[y2][x2] = 0;
+//				IncreaseMoney(); // tăng tiền
+//			}
+//			else {
+//				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+//					y_pos_ = y2 * TILE_SIZE;
+//					y_pos_ -= (height_frame_ + 1);
+//					y_val_ = 0;
+//					on_ground_ = true;
+//					if (status_ == WALK_NONE) {
+//						status_ = WALK_RIGHT;
+//					}
+//				}
+//			}
+//		}
+//		else if (y_val_ < 0) { // nhân vật nhảy lên
+//			int val1 = map_data.tile[y1][x1];
+//			int val2 = map_data.tile[y1][x2];
+//			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
+//				map_data.tile[y1][x1] = 0; // xóa tiền
+//				map_data.tile[y1][x2] = 0;
+//				IncreaseMoney(); // tăng tiền
+//			}
+//			else {
+//				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
+//					y_pos_ = (y1 + 1) * TILE_SIZE;
+//					y_val_ = 0;
+//				}
+//			}
+//			/*if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE) {
+//				y_pos_ = (y1 + 1) * TILE_SIZE;
+//				y_val_ = 0;
+//			}*/
+//		}
+//	}
+//
+//	x_pos_ += x_val_;
+//	y_pos_ += y_val_;
+//	if (x_pos_ < 0) { // lùi đến đít bản đồ thì dùng lại
+//		x_pos_ = 0;
+//	}
+//	else if (x_pos_ + width_frame_ > map_data.max_X_) { // quá giới hạn bản đồ thì dùng lại
+//		x_pos_ = map_data.max_X_ - width_frame_ - 1;
+//	}
+//	if (y_pos_ > map_data.max_Y_) {
+//		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
+//	}
+//}
 void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va chạm với map
 	int x1 = 0; // giới hạn kiểm tra từ A đến B theo chiều x 
 	int x2 = 0;
@@ -336,26 +461,46 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	y1 = (y_pos_) / TILE_SIZE;
 	y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
 
-
 	/*
 	   x1, y1 ******** x2, y1
 	   *
 	   *
 	   *
 	   x1, y2 ******** x2,y2
-	
 	*/
 	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
-		if (x_val_ > 0) {// nhân  vật đang di chuyển qua phải
+		if (x_val_ > 0) { // nhân vật đang di chuyển qua phải
 			int val1 = map_data.tile[y1][x2]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
 			int val2 = map_data.tile[y2][x2];
 
-			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
-				map_data.tile[y1][x2] = 0; // xóa tiền
-				map_data.tile[y2][x2] = 0;
+			if (val1 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y1][x2] = 0; // xóa vàng
 				IncreaseMoney(); // tăng tiền
 			}
-			else {
+			if (val2 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y2][x2] = 0; // xóa vàng
+				IncreaseMoney(); // tăng tiền
+			}
+			if (val1 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val2 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val1 != STATE_MONEY && 
+				val2 != STATE_MONEY && 
+				val1 != DRUG_HP && 
+				val2 != DRUG_HP && 
+				val1 != TREE1 && 
+				val2 != TREE1 && 
+				val1 != TREE3 && 
+				val2 != TREE3 && 
+				val1 != TREE4 && 
+				val2 != TREE4 && 
+				val1 != TREE5 && 
+				val2 != TREE5) {
 				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
 					x_pos_ = x2 * TILE_SIZE;
 					x_pos_ -= (width_frame_ + 1);
@@ -367,12 +512,34 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 			int val1 = map_data.tile[y1][x1]; // lấy giá trị của ô vật phẩm mà nhân vật sẽ va chạm
 			int val2 = map_data.tile[y2][x1];
 
-			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
-				map_data.tile[y1][x1] = 0; // xóa tiền
-				map_data.tile[y2][x1] = 0;
+			if (val1 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y1][x1] = 0; // xóa vàng
 				IncreaseMoney(); // tăng tiền
 			}
-			else {
+			if (val2 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y2][x1] = 0; // xóa vàng
+				IncreaseMoney(); // tăng tiền
+			}
+			if (val1 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val2 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val1 != STATE_MONEY && 
+				val2 != STATE_MONEY && 
+				val1 != DRUG_HP && 
+				val2 != DRUG_HP && 
+				val1 != TREE1 && 
+				val2 != TREE1 && 
+				val1 != TREE3 && 
+				val2 != TREE3 && 
+				val1 != TREE4 && 
+				val2 != TREE4 && 
+				val1 != TREE5 && 
+				val2 != TREE5) {
 				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
 					x_pos_ = (x1 + 1) * TILE_SIZE;
 					x_val_ = 0;
@@ -394,12 +561,34 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 			int val1 = map_data.tile[y2][x1];
 			int val2 = map_data.tile[y2][x2];
 
-			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
-				map_data.tile[y2][x1] = 0; // xóa tiền
-				map_data.tile[y2][x2] = 0;
+			if (val1 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y2][x1] = 0; // xóa vàng
 				IncreaseMoney(); // tăng tiền
 			}
-			else {
+			if (val2 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y2][x2] = 0; // xóa vàng
+				IncreaseMoney(); // tăng tiền
+			}
+			if (val1 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val2 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val1 != STATE_MONEY && 
+				val2 != STATE_MONEY && 
+				val1 != DRUG_HP && 
+				val2 != DRUG_HP && 
+				val1 != TREE1 && 
+				val2 != TREE1 && 
+				val1 != TREE3 && 
+				val2 != TREE3 && 
+				val1 != TREE4 && 
+				val2 != TREE4 && 
+				val1 != TREE5 && 
+				val2 != TREE5) {
 				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
 					y_pos_ = y2 * TILE_SIZE;
 					y_pos_ -= (height_frame_ + 1);
@@ -414,36 +603,55 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 		else if (y_val_ < 0) { // nhân vật nhảy lên
 			int val1 = map_data.tile[y1][x1];
 			int val2 = map_data.tile[y1][x2];
-			if (val1 == STATE_MONEY || val2 == STATE_MONEY) { // nếu nhân vật va chạm với tiền
-				map_data.tile[y1][x1] = 0; // xóa tiền
-				map_data.tile[y1][x2] = 0;
+			if (val1 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y1][x1] = 0; // xóa vàng
 				IncreaseMoney(); // tăng tiền
 			}
-			else {
+			if (val2 == STATE_MONEY) { // nếu nhân vật va chạm với vàng
+				map_data.tile[y1][x2] = 0; // xóa vàng
+				IncreaseMoney(); // tăng tiền
+			}
+			if (val1 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val2 == DRUG_HP) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				eat_grass_Hp_ = true; // tăng máu
+			}
+			if (val1 != STATE_MONEY && 
+				val2 != STATE_MONEY && 
+				val1 != DRUG_HP && 
+				val2 != DRUG_HP && 
+				val1 != TREE1 && 
+				val2 != TREE1 && 
+				val1 != TREE3 && 
+				val2 != TREE3 && 
+				val1 != TREE4 && 
+				val2 != TREE4  && 
+				val1 != TREE5 && 
+				val2 != TREE5) {
 				if (val1 != BLANK_TILE || val2 != BLANK_TILE) {
 					y_pos_ = (y1 + 1) * TILE_SIZE;
 					y_val_ = 0;
 				}
 			}
-			/*if (map_data.tile[y1][x1] != BLANK_TILE || map_data.tile[y1][x2] != BLANK_TILE) {
-				y_pos_ = (y1 + 1) * TILE_SIZE;
-				y_val_ = 0;
-			}*/
 		}
 	}
 
 	x_pos_ += x_val_;
 	y_pos_ += y_val_;
-	if (x_pos_ < 0) { // lùi đến đít bản đồ thì dùng lại
+	if (x_pos_ < 0) { // lùi đến đít bản đồ thì dừng lại
 		x_pos_ = 0;
 	}
-	else if (x_pos_ + width_frame_ > map_data.max_X_) { // quá giới hạn bản đồ thì dùng lại
+	else if (x_pos_ + width_frame_ > map_data.max_X_) { // quá giới hạn bản đồ thì dừng lại
 		x_pos_ = map_data.max_X_ - width_frame_ - 1;
 	}
 	if (y_pos_ > map_data.max_Y_) {
 		come_back_time_ = 60; // thời gian quay trở lại độ trễ 60
 	}
 }
+
 
 void MainObject::IncreaseMoney() {
 	money_count_++;

@@ -3,7 +3,7 @@
 #define GAME_MAP_H
 #include "BaseFunction.h"
 #include "BaseObject.h"
-#define MAX_TILES 20
+#define MAX_TILES 100
 class TileMat : public BaseObject { // Kế thứa từ BaseObject
 public:
 	TileMat() { ; }
