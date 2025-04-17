@@ -46,7 +46,7 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
         // Cập nhật vị trí và kích thước cho nút "Start"
         start_rect = {
             SCREEN_WIDTH / 2 - start_text.GetWidth() / 2,  // Căn giữa màn hình
-            SCREEN_HEIGHT / 2 - 60,                        // Vị trí y của nút "Start"
+            SCREEN_HEIGHT / 2 + 100,                        // Vị trí y của nút "Start"
             start_text.GetWidth(),                         // Chiều rộng của nút "Start"
             start_text.GetHeight()                         // Chiều cao của nút "Start"
         };
@@ -61,7 +61,7 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
         // Cập nhật vị trí và kích thước cho nút "Exit"
         exit_rect = {
             SCREEN_WIDTH / 2 - exit_text.GetWidth() / 2,  // Căn giữa màn hình
-            SCREEN_HEIGHT / 2 + 60,                        // Vị trí y của nút "Exit"
+            SCREEN_HEIGHT / 2 + 200,                        // Vị trí y của nút "Exit"
             exit_text.GetWidth(),                          // Chiều rộng của nút "Exit"
             exit_text.GetHeight()                          // Chiều cao của nút "Exit"
         };
