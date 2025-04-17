@@ -130,7 +130,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseFunction.cpp" />
+    <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="BossObject.cpp" />
+    <ClCompile Include="BulletObject.cpp" />
+    <ClCompile Include="CharacterObject.cpp" />
+    <ClCompile Include="ExplosionObject.cpp" />
+    <ClCompile Include="Game_map.cpp" />
+    <ClCompile Include="Geometric.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="ImpTimer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayPower.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="stdafx.h" />
+    <ClCompile Include="TextObject.cpp" />
+    <ClCompile Include="TextObject.h" />
+    <ClCompile Include="ThreatsObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseFunction.h" />
+    <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="BossObject.h" />
+    <ClInclude Include="BulletObject.h" />
+    <ClInclude Include="CharacterObject.h" />
+    <ClInclude Include="ExplosionObject.h" />
+    <ClInclude Include="Game_map.h" />
+    <ClInclude Include="Geometric.h" />
+    <ClInclude Include="ImpTimer.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="PlayPower.h" />
+    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="ThreatsObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
