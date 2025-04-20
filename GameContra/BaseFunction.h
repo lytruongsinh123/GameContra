@@ -43,6 +43,7 @@ const int RENDER_DRAW_COLOR = 0XFF;
 #define TREE4 42
 #define TREE5 43
 #define NEW_TYPE_BULLET 19
+#define DEFAULT_BULLET 60
 typedef struct {
 	int left_; // di chuyển sang trái 
 	int right_; // ______________phải
