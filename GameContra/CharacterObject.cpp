@@ -739,10 +739,11 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	}
 }
 
-
 void MainObject::IncreaseMoney() {
 	money_count_++;
+		
 }
+
 void MainObject::UpdateImagePlayer(SDL_Renderer* des) {
 	if (on_ground_ == true) {
 		if (status_ == WALK_LEFT) {
