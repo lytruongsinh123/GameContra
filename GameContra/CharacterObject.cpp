@@ -513,6 +513,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -568,6 +572,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -633,6 +641,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -691,6 +703,10 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
