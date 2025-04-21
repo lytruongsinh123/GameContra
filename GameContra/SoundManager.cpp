@@ -65,7 +65,7 @@ bool SoundManager::playEffect(Mix_Chunk* effect, int loops) {
 // Giải phóng nhạc nền đã tải
 void SoundManager::freeMusic(Mix_Music* music) {
     if (music != nullptr) {
-        Mix_FreeMusic(music);
+        Mix_FreeMusic(music); 
         music = nullptr;
     }
 }
