@@ -27,6 +27,9 @@ public:
     // Phát hiệu ứng âm thanh; loops = 0 để phát 1 lần
     bool playEffect(Mix_Chunk* effect, int loops = 0);
 
+    bool loadCoinSound(const std::string& filePath);
+    void playCoinSound();
+
     // Giải phóng nhạc nền
     void freeMusic(Mix_Music* music);
 
@@ -38,6 +41,7 @@ public:
 
 private:
     bool mInitialized; // Kiểm tra SDL_mixer đã được khởi tạo hay chưa
+    Mix_Chunk* m_coinSound = nullptr;
 };
 
 #endif // SOUNDMANAGER_H

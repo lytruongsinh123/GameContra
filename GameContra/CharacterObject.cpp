@@ -186,6 +186,9 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 			// Tạo viên đạn mới
 			BulletObject* p_bullet = new BulletObject();
 			p_bullet->set_bullet_type(BulletObject::SPHERE_BULLET); // Set kiểu của đạn
+			if (change_bullet_ == true) { // nếu có thay đổi đạn
+				p_bullet->set_bullet_type(BulletObject::FIRE_BULLET); // thay đổi loại đạn
+			}
 			bool ret = p_bullet->LoadImgBullet(screen);
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 			bool is_up_pressed = currentKeyStates[SDL_SCANCODE_UP];
@@ -233,7 +236,7 @@ void MainObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen) { // 
 void MainObject::HandleBullet(SDL_Renderer* des) {
 	for (int i = 0; i < p_bullet_list_.size(); i++) { // Kiểm tra trong băng bạn có đạn hay không
 		BulletObject* p_bullet = p_bullet_list_.at(i); // lấy ra viên đạn đó
-		if (p_bullet != NULL) { // kiểm tra viên đạn có khác null khôn
+		if (p_bullet != NULL) { // kiểm tra viên đạn có khác null không
 			if (p_bullet->get_is_move()) { // nếu viên đạn di chuyển
 				p_bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT); // xử lý di chuyển viên đạn
 				p_bullet->Render(des); // liên tục vẽ viên đạn lên màn hình
@@ -490,10 +493,30 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				map_data.tile[y2][x2] = 0; // xóa thuốc
 				eat_grass_Hp_ = true; // tăng máu
 			}
+			if (val1 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val2 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val1 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
+			if (val2 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
 			if (val1 != STATE_MONEY && 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -529,10 +552,30 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				map_data.tile[y2][x1] = 0; // xóa thuốc
 				eat_grass_Hp_ = true; // tăng máu
 			}
+			if (val1 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val2 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val1 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
+			if (val2 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
 			if (val1 != STATE_MONEY && 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -578,10 +621,30 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				map_data.tile[y2][x2] = 0; // xóa thuốc
 				eat_grass_Hp_ = true; // tăng máu
 			}
+			if (val1 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val2 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val1 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x1] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
+			if (val2 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y2][x2] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
 			if (val1 != STATE_MONEY && 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -620,10 +683,30 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 				map_data.tile[y1][x2] = 0; // xóa thuốc
 				eat_grass_Hp_ = true; // tăng máu
 			}
+			if (val1 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val2 == NEW_TYPE_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				change_bullet_ = true; // có sự thay đổi đạn
+			}
+			if (val1 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x1] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
+			if (val2 == DEFAULT_BULLET) { // nếu nhân vật va chạm với thuốc
+				map_data.tile[y1][x2] = 0; // xóa thuốc
+				change_bullet_ = false; // có sự thay đổi đạn
+			}
 			if (val1 != STATE_MONEY && 
 				val2 != STATE_MONEY && 
 				val1 != DRUG_HP && 
 				val2 != DRUG_HP && 
+				val1 != NEW_TYPE_BULLET &&
+				val2 != NEW_TYPE_BULLET &&
+				val1 != DEFAULT_BULLET &&
+				val2 != DEFAULT_BULLET &&
 				val1 != TREE1 && 
 				val2 != TREE1 && 
 				val1 != TREE3 && 
@@ -656,10 +739,11 @@ void MainObject::CheckToMap(Map& map_data) { // hàm chính để kiểm tra va 
 	}
 }
 
-
 void MainObject::IncreaseMoney() {
 	money_count_++;
+		
 }
+
 void MainObject::UpdateImagePlayer(SDL_Renderer* des) {
 	if (on_ground_ == true) {
 		if (status_ == WALK_LEFT) {

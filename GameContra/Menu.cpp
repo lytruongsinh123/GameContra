@@ -1,4 +1,5 @@
 ﻿#include "Menu.h"
+#include "SoundManager.h"
 
 Menu::Menu() {}
 Menu::~Menu() {}
@@ -20,6 +21,19 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
         printf("Failed to load fonts: %s\n", TTF_GetError());
         return -1;
     }
+
+    SoundManager soundManager;
+    if (!soundManager.init()) {
+        std::cout << "Failed to initialize sound manager.\n";
+    }
+
+    Mix_Music* menuMusic = soundManager.loadMusic("sound//menu_music.mp3");
+    if (menuMusic) {
+        soundManager.playMusic(menuMusic, -1);  // lặp vô hạn
+    }
+
+    Mix_Chunk* clickSoundStart = soundManager.loadEffect("sound//click_start.wav");
+    Mix_Chunk* clickSoundExit = soundManager.loadEffect("sound//click_Exit.wav");
 
     bool hover_start = false; // Biến kiểm tra có hover trên nút "Start" không
     bool hover_exit = false;  // Biến kiểm tra có hover trên nút "Exit" không
@@ -46,7 +60,7 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
         // Cập nhật vị trí và kích thước cho nút "Start"
         start_rect = {
             SCREEN_WIDTH / 2 - start_text.GetWidth() / 2,  // Căn giữa màn hình
-            SCREEN_HEIGHT / 2 - 60,                        // Vị trí y của nút "Start"
+            SCREEN_HEIGHT / 2 + 100,                        // Vị trí y của nút "Start"
             start_text.GetWidth(),                         // Chiều rộng của nút "Start"
             start_text.GetHeight()                         // Chiều cao của nút "Start"
         };
@@ -61,7 +75,7 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
         // Cập nhật vị trí và kích thước cho nút "Exit"
         exit_rect = {
             SCREEN_WIDTH / 2 - exit_text.GetWidth() / 2,  // Căn giữa màn hình
-            SCREEN_HEIGHT / 2 + 60,                        // Vị trí y của nút "Exit"
+            SCREEN_HEIGHT / 2 + 200,                        // Vị trí y của nút "Exit"
             exit_text.GetWidth(),                          // Chiều rộng của nút "Exit"
             exit_text.GetHeight()                          // Chiều cao của nút "Exit"
         };
@@ -77,14 +91,22 @@ int Menu::ShowMenu(SDL_Renderer* renderer, TTF_Font* /*font*/) {
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 // Nếu nhấn chuột vào nút "Start"
                 if (hover_start) {
+                    soundManager.playEffect(clickSoundStart);
+                    SDL_Delay(1000); // delay nhỏ để tiếng click phát xong
                     TTF_CloseFont(font_normal);
                     TTF_CloseFont(font_hover);
+                    soundManager.freeMusic(menuMusic);
+                    soundManager.freeEffect(clickSoundStart);
                     return 1;  // Trở về giá trị 1, để bắt đầu trò chơi
                 }
                 // Nếu nhấn chuột vào nút "Exit"
                 if (hover_exit) {
+                    soundManager.playEffect(clickSoundExit);
+					SDL_Delay(1000); // delay nhỏ để tiếng click phát xong
                     TTF_CloseFont(font_normal);
                     TTF_CloseFont(font_hover);
+                    soundManager.freeMusic(menuMusic);
+                    soundManager.freeEffect(clickSoundExit);
                     return 0;  // Trở về giá trị 0, để thoát trò chơi
                 }
             }

@@ -462,6 +462,7 @@ int main(int argc, char* argv[]) {
 		for (int bl = 0; bl < bullet_list2.size(); bl++) {
 			BulletObject* p_bullet = bullet_list2.at(bl);
 			if (p_bullet != NULL) {
+
 				SDL_Rect tRect;
 					tRect.x = bossObject.GetRect().x;
 					tRect.y = bossObject.GetRect().y;
@@ -667,7 +668,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		//----------------------rơi xuống vực---------------------
-
 
 		SDL_RenderPresent(g_screen); // Cap nhat renderer
 

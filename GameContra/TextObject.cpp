@@ -1,5 +1,7 @@
 ﻿ #include "stdafx.h"
 #include "TextObject.h"
+#include "SoundManager.h"
+
 TextObject::TextObject() {
 	texture_ = NULL;
 	text_color_.r = 255;

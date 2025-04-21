@@ -22,6 +22,7 @@ public:
 		SPHERE_BULLET = 50,
 		LASER_BULLET = 51,
 		BLUE_BULLET = 52,
+		FIRE_BULLET = 19,
 	};
 
 	void set_x_val(const int& xVal) { x_val_ = xVal; }

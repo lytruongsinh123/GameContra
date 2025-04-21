@@ -43,7 +43,10 @@ public:
 	void set_eat_grass_Hp(const bool& eat) { eat_grass_Hp_ = eat; } // set trạng thái ăn cỏ
 	void set_fall_down(const bool& fall) { fall_down_ = fall; } // set trạng thái rơi xuống
 	bool get_fall_down() const { return fall_down_; } // lấy trạng thái rơi xuống
+	bool Set_change_type_bullet(const bool& cb) { return change_bullet_ = cb; } // lấy trạng thái thay đổi đạn
+	bool Get_change_type_bullet() const { return change_bullet_; } // lấy trạng thái thay đổi đạn
 private:
+	bool change_bullet_; // kiểm tra có thay đổi đạn không
 	bool eat_grass_Hp_; // kiểm tra có ăn được cỏ không
 	bool fall_down_; // kiểm tra có rơi xuống không
 	int money_count_; // số tiền ăn được

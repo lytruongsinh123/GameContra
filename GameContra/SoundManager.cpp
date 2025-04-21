@@ -61,10 +61,12 @@ bool SoundManager::playEffect(Mix_Chunk* effect, int loops) {
     return true;
 }
 
+
 // Giải phóng nhạc nền đã tải
 void SoundManager::freeMusic(Mix_Music* music) {
     if (music != nullptr) {
         Mix_FreeMusic(music);
+        music = nullptr;
     }
 }
 
@@ -72,6 +74,7 @@ void SoundManager::freeMusic(Mix_Music* music) {
 void SoundManager::freeEffect(Mix_Chunk* effect) {
     if (effect != nullptr) {
         Mix_FreeChunk(effect);
+		effect = nullptr;
     }
 }
 
