@@ -31,9 +31,14 @@ void PlayerPower::Show(SDL_Renderer* des) {
 }
 void PlayerPower::InCrease() {
 	number_++; // tăng số mạng lên 1
-	int last_pos = pos_list_.back(); // lấy vị trí cuối cùng
-	last_pos  += 40; // tăng thêm 40 pixels
-	pos_list_.push_back(last_pos); // thêm vị trí mới vào danh sách
+	if(!pos_list_.empty()) {
+		int last_pos = pos_list_.back(); // lấy vị trí cuối cùng
+		last_pos += 40; // tăng thêm 40 pixels
+		pos_list_.push_back(last_pos); // thêm vị trí mới vào danh sách
+	}
+	else {
+		pos_list_.push_back(20); // nếu danh sách rỗng thì thêm vị trí đầu tiên
+	}
 }
 void PlayerPower::DeCrease() {
 	number_--; // giảm số mạng đi 1
