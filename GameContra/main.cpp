@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
 
 
 	GameMap game_map_;
-	game_map_.LoadMap("map1//map.dat");
+	game_map_.LoadMap("map1//newmap.dat");
 	game_map_.LoadTiles(g_screen);
 
 
